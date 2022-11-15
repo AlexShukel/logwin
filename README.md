@@ -29,4 +29,4 @@ cmake --build build
 
 TODO: add separate builds for debug and release
 
-3. logwin.exe will appear in `build/src/main` directory
+3. logwin.exe will appear in `build/cli/src` directory
