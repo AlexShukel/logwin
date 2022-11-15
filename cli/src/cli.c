@@ -1,8 +1,13 @@
 #include <sha256.h>
 #include <stdio.h>
+#include <string.h>
 
 int main() {
-    char str[] = "Hello world!";
-    printf("%s\n", sha256(str));
+    uint8_t hash[SIZE_OF_SHA_256_HASH];
+    char input[] = "Hello world!";
+    calc_sha_256(hash, input, strlen(input));
+
+    printf("Hash of %s is: %s", input, hash);
+
     return 0;
 }
