@@ -6,7 +6,7 @@ int main() {
     gcladosColors.setColorsSupported(true);
     gcladosSetUpdateSnapshots(false);
     GcladosTest gcladosTests0[] = {
-        __gcladosTest_sha256_1("Should return string"),
+        __gcladosTest_sha256_1("SHA256 tests"),
     };
     GcladosTestSuite gcladosTestSuite0 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/sha256/test/sha256.test.c", gcladosTests0, 1);
     GcladosTestSuite gcladosTestSuites[] = {
