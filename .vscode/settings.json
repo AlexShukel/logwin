@@ -12,6 +12,9 @@
 	},
 	"files.associations": {
 		"stdio.h": "c",
-		"memory.h": "c"
+		"memory.h": "c",
+		"string.h": "c",
+		"stdlib.h": "c",
+		"menu.h": "c"
 	}
 }
