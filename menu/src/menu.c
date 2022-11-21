@@ -80,7 +80,8 @@ int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,
         refresh();
     }
 
-    clear();
+    erase();
+    keypad(stdscr, FALSE);
 
     return selected;
 }

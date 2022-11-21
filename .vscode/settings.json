@@ -15,6 +15,7 @@
 		"memory.h": "c",
 		"string.h": "c",
 		"stdlib.h": "c",
-		"menu.h": "c"
+		"menu.h": "c",
+		"curses.h": "c"
 	}
 }
