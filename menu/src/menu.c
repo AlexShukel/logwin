@@ -76,8 +76,6 @@ int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,
         if ('\n' == ch) {
             break;
         };
-
-        refresh();
     }
 
     erase();

@@ -1,5 +1,6 @@
 #include "curses.h"
 #include "menu.h"
+#include "sha256.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +8,11 @@
 
 #define USERNAME_LENGTH 255
 #define PASSWORD_LENGTH 255
+
+typedef struct {
+    char name[USERNAME_LENGTH];
+    uint8_t hash[SIZE_OF_SHA_256_HASH];
+} User;
 
 static inline int max(int a, int b) { return a > b ? a : b; }
 
@@ -51,8 +57,9 @@ int main() {
 
     char loginOption[] = "Login";
     char singUpOption[] = "Sign up";
-    char *options[] = {loginOption, singUpOption};
-    int answer = showMenu("Authentication options:", options, 2,
+    char printAllUsers[] = "Print all users";
+    char *options[] = {loginOption, singUpOption, printAllUsers};
+    int answer = showMenu("Authentication options:", options, 3,
                           "Login to existing account or create a new one.");
 
     echo();
@@ -60,17 +67,17 @@ int main() {
     if (answer == 0) {
         // Login
         printw("Enter your username:\n");
-    } else {
+    } else if (answer == 1) {
         // Sign up
         printw("New username:\n");
-        char *newUsername = malloc(USERNAME_LENGTH);
+        char newUsername[USERNAME_LENGTH];
         inputString(newUsername);
 
         // Disable echo for password input
         noecho();
         bool arePasswordSame = false;
-        char *newPassword = malloc(PASSWORD_LENGTH);
-        char *repeatedNewPassword = malloc(PASSWORD_LENGTH);
+        char newPassword[PASSWORD_LENGTH];
+        char repeatedNewPassword[PASSWORD_LENGTH];
         init_pair(1, COLOR_RED, COLOR_BLACK);
 
         int currentLine = stdscr->_cury + 1;
@@ -93,10 +100,44 @@ int main() {
             }
         }
 
-        printf("%s\n%s\n", newUsername, newPassword);
+        FILE *usersDB = fopen("usersDB.bin", "ab");
 
-        free(newUsername);
-        free(newPassword);
+        if (usersDB != NULL) {
+            uint8_t hash[SIZE_OF_SHA_256_HASH];
+            calc_sha_256(hash, newPassword, strlen(newPassword));
+
+            User user;
+
+            memcpy(user.name, newUsername, USERNAME_LENGTH);
+            memcpy(user.hash, hash, SIZE_OF_SHA_256_HASH);
+
+            fwrite(&user, sizeof(User), 1, usersDB);
+
+            fclose(usersDB);
+        } else {
+            fprintf(stderr, "Error: unable to open usersDB file.\n");
+        }
+    } else {
+        FILE *usersDB = fopen("usersDB.bin", "rb");
+
+        if (usersDB != NULL) {
+            // TODO: store size of array in file
+            while (!feof(usersDB)) {
+                User user;
+
+                fread(&user, sizeof(User), 1, usersDB);
+
+                printf("%s\n", user.name);
+                for (int i = 0; i < SIZE_OF_SHA_256_HASH; ++i) {
+                    printf("%c", user.hash[i]);
+                }
+                printf("\n");
+            }
+
+            fclose(usersDB);
+        } else {
+            printf("Unable to open usersDB file\n");
+        }
     }
 
     endwin();

@@ -16,6 +16,9 @@
 		"string.h": "c",
 		"stdlib.h": "c",
 		"menu.h": "c",
-		"curses.h": "c"
+		"curses.h": "c",
+		"sha256.h": "c",
+		"system_error": "c",
+		"xlocale": "c"
 	}
 }
