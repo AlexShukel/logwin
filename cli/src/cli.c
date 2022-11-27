@@ -1,53 +1,35 @@
 #include "curses.h"
+#include "inputString.h"
 #include "menu.h"
 #include "sha256.h"
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define USERNAME_LENGTH 255
 #define PASSWORD_LENGTH 255
+
+#define USERS_DB "usersDB.bin"
+
+enum UserAction {
+    LOGIN,
+    SIGN_UP,
+};
 
 typedef struct {
     char name[USERNAME_LENGTH];
     uint8_t hash[SIZE_OF_SHA_256_HASH];
 } User;
 
-static inline int max(int a, int b) { return a > b ? a : b; }
-
-void inputString(char *str) {
-    int i = 0;
-    while (1) {
-        int ch = getch();
-
-        if (ch == ERR) {
-            continue;
-        }
-
-        if (ch == '\n') {
-            break;
-        }
-
-        if (ch == '\b') {
-            i = max(0, i - 1);
-            mvdelch(stdscr->_cury, stdscr->_curx);
-            continue;
-        }
-
-        str[i] = ch;
-        ++i;
-    }
-
-    str[i] = '\0';
-}
-
 int main() {
     initscr();
 
     if (has_colors() == FALSE) {
         endwin();
-        printf("Your terminal does not support color\n");
+        fprintf(stderr, "Your terminal does not support color\n");
         exit(1);
     }
 
@@ -55,42 +37,49 @@ int main() {
 
     printw("Welcome to logwin!\n");
 
+    // List of options
     char loginOption[] = "Login";
     char singUpOption[] = "Sign up";
     char printAllUsers[] = "Print all users";
     char *options[] = {loginOption, singUpOption, printAllUsers};
+
+    // Get answer from menu
     int answer = showMenu("Authentication options:", options, 3,
                           "Login to existing account or create a new one.");
 
     echo();
 
-    if (answer == 0) {
-        // Login
+    switch (answer) {
+
+    case LOGIN: {
         printw("Enter your username:\n");
-    } else if (answer == 1) {
-        // Sign up
+        break;
+    }
+
+    case SIGN_UP: {
         printw("New username:\n");
         char newUsername[USERNAME_LENGTH];
-        inputString(newUsername);
+        inputString(newUsername, USERNAME_LENGTH);
 
         // Disable echo for password input
         noecho();
-        bool arePasswordSame = false;
+        init_pair(1, COLOR_RED, COLOR_BLACK);
+
+        bool arePasswordsSame = false;
         char newPassword[PASSWORD_LENGTH];
         char repeatedNewPassword[PASSWORD_LENGTH];
-        init_pair(1, COLOR_RED, COLOR_BLACK);
 
         int currentLine = stdscr->_cury + 1;
 
-        while (!arePasswordSame) {
+        while (!arePasswordsSame) {
             mvprintw(currentLine, 0, "New master password:\n");
-            inputString(newPassword);
+            inputString(newPassword, PASSWORD_LENGTH);
 
             mvprintw(currentLine + 2, 0, "Repeat you master password:\n");
-            inputString(repeatedNewPassword);
+            inputString(repeatedNewPassword, PASSWORD_LENGTH);
 
             if (strcmp(newPassword, repeatedNewPassword) == 0) {
-                arePasswordSame = true;
+                arePasswordsSame = true;
             } else {
                 attron(COLOR_PAIR(1));
                 mvprintw(currentLine - 1, 0,
@@ -100,7 +89,20 @@ int main() {
             }
         }
 
-        FILE *usersDB = fopen("usersDB.bin", "ab");
+        bool fileExists = false;
+        if (access(USERS_DB, F_OK) == 0) {
+            fileExists = true;
+        }
+
+        FILE *usersDB = fopen(USERS_DB, fileExists ? "r+b" : "w");
+
+        u_int64_t size = 0;
+
+        if (!fileExists) {
+            fwrite(&size, sizeof(u_int64_t), 1, usersDB);
+        } else {
+            fread(&size, sizeof(u_int64_t), 1, usersDB);
+        }
 
         if (usersDB != NULL) {
             uint8_t hash[SIZE_OF_SHA_256_HASH];
@@ -112,17 +114,26 @@ int main() {
             memcpy(user.hash, hash, SIZE_OF_SHA_256_HASH);
 
             fwrite(&user, sizeof(User), 1, usersDB);
+            rewind(usersDB);
+            ++size;
+            fwrite(&size, sizeof(u_int64_t), 1, usersDB);
 
             fclose(usersDB);
         } else {
             fprintf(stderr, "Error: unable to open usersDB file.\n");
         }
-    } else {
-        FILE *usersDB = fopen("usersDB.bin", "rb");
+        break;
+    }
+
+    // TODO: delete this code
+    default: {
+        FILE *usersDB = fopen(USERS_DB, "rb");
 
         if (usersDB != NULL) {
-            // TODO: store size of array in file
-            while (!feof(usersDB)) {
+            u_int64_t size;
+            fread(&size, sizeof(u_int64_t), 1, usersDB);
+
+            for (int i = 0; i < size; ++i) {
                 User user;
 
                 fread(&user, sizeof(User), 1, usersDB);
@@ -138,6 +149,8 @@ int main() {
         } else {
             printf("Unable to open usersDB file\n");
         }
+        break;
+    }
     }
 
     endwin();

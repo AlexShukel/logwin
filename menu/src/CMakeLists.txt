@@ -1,6 +1,6 @@
 add_library(menu STATIC menu.c)
 
-target_include_directories(menu PUBLIC "${PROJECT_SOURCE_DIR}/include/menu" "${PROJECT_SOURCE_DIR}/include/pdcurses")
+target_include_directories(menu PUBLIC "${PROJECT_SOURCE_DIR}/include/menu")
 target_include_directories(menu PUBLIC "${PROJECT_SOURCE_DIR}/include/pdcurses")
 
 add_library(pdcurses SHARED IMPORTED)

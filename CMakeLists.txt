@@ -11,3 +11,6 @@ add_subdirectory(sha256/test)
 
 # Menu
 add_subdirectory(menu/src)
+
+# Utils
+add_subdirectory(utils/src)

@@ -8,6 +8,10 @@ target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include/sha256")
 target_link_libraries(logwin menu)
 target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include/menu")
 
+# utils
+target_link_libraries(logwin utils)
+target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include/utils")
+
 add_custom_command(
     TARGET logwin POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
