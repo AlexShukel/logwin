@@ -1,8 +1,10 @@
 #ifndef SHA_256_H
 #define SHA_256_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+
 
 /*
  * @brief Size of the SHA-256 sum. This times eight is 256 bits.
@@ -106,5 +108,7 @@ void sha_256_write(struct Sha_256 *sha_256, const void *data, size_t len);
  * is legal. It will calculate the SHA-256 value of the empty string.
  */
 uint8_t *sha_256_close(struct Sha_256 *sha_256);
+
+bool are_hashes_equal(char *hash1, char *hash2);
 
 #endif

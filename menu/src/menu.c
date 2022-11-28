@@ -1,23 +1,21 @@
+#include "app.h"
 #include "curses.h"
 #include "menu.h"
+#include "utils.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+
 void printMenuOptions(char **menuOptions, size_t menuSize, int selectedItem,
                       int firstLine) {
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
-
-    for (int i = 0; i < menuSize; ++i) {
-        if (selectedItem == i) {
-            attron(COLOR_PAIR(1));
-        }
-
-        mvprintw(firstLine + i, 0, "%s\n", menuOptions[i]);
-
-        if (selectedItem == i) {
-            attroff(COLOR_PAIR(1));
-        }
+    for (int i = 0; i < menuSize + 1; ++i) {
+        short textColor =
+            selectedItem == i ? GREEN_TEXT_COLOR : DEFAULT_TEXT_COLOR;
+        attron(COLOR_PAIR(textColor));
+        mvprintw(firstLine + i, 0, "%s\n",
+                 i == menuSize ? "Exit" : menuOptions[i]);
+        attroff(COLOR_PAIR(textColor));
     }
 }
 
@@ -51,7 +49,7 @@ int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,
 
         if (KEY_UP == ch) {
             if (selected == 0) {
-                selected = menuSize - 1;
+                selected = menuSize;
             } else {
                 --selected;
             }
@@ -62,7 +60,7 @@ int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,
         }
 
         if (KEY_DOWN == ch) {
-            if (selected == menuSize - 1) {
+            if (selected == menuSize) {
                 selected = 0;
             } else {
                 ++selected;
@@ -76,11 +74,11 @@ int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,
         if ('\n' == ch) {
             break;
         };
-
-        refresh();
     }
 
-    clear();
+    erase();
+    keypad(stdscr, FALSE);
+    echo();
 
     return selected;
 }

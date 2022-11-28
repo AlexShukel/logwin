@@ -232,3 +232,13 @@ void calc_sha_256(uint8_t hash[SIZE_OF_SHA_256_HASH], const void *input,
     sha_256_write(&sha_256, input, len);
     (void)sha_256_close(&sha_256);
 }
+
+bool are_hashes_equal(char *hash1, char *hash2) {
+    for (int i = 0; i < SIZE_OF_SHA_256_HASH; ++i) {
+        if (hash1[i] != hash2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
