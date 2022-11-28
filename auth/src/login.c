@@ -4,17 +4,21 @@
 #include "utils.h"
 #include <stdbool.h>
 
-
 void login() {
     char username[USERNAME_LENGTH];
     char password[PASSWORD_LENGTH];
     bool isValidLogin = false;
 
+    if (!fileExists(USERS_DB)) {
+        fprintf(stderr,
+                "No users found in the database. Please, create an account.");
+        return;
+    }
+
     FILE *usersDB = fopen(USERS_DB, "rb");
 
     if (usersDB == NULL) {
-        fprintf(stderr,
-                "No users found in the database. Please, create an account.");
+        fprintf(stderr, "Error: unable to open users DB file.\n");
         return;
     }
 

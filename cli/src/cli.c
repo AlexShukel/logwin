@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void initConsole() {
     initscr();
@@ -43,7 +44,12 @@ int main() {
     }
 
     case SIGN_UP: {
-        signUp();
+        bool signedUp = signUp();
+        if (signedUp) {
+            printw("Signed up successfully!\nNow you can login to your "
+                   "account.\n");
+            login();
+        };
         break;
     }
 

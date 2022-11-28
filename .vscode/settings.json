@@ -21,6 +21,7 @@
 		"system_error": "c",
 		"xlocale": "c",
 		"inttypes.h": "c",
-		"utils.h": "c"
+		"utils.h": "c",
+		"stdbool.h": "c"
 	},
 }

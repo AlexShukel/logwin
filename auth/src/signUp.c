@@ -4,29 +4,25 @@
 #include "sha256.h"
 #include "utils.h"
 #include <stdbool.h>
-#include <unistd.h>
 
-void signUp() {
+bool signUp() {
     char newUsername[USERNAME_LENGTH];
     bool isValidUsername = false;
     int currentLine = stdscr->_cury + 1;
 
-    bool fileExists = false;
-    if (access(USERS_DB, F_OK) == 0) {
-        fileExists = true;
-    }
+    bool isFileExists = fileExists(USERS_DB);
 
-    FILE *usersDB = fopen(USERS_DB, fileExists ? "r+b" : "w");
+    FILE *usersDB = fopen(USERS_DB, isFileExists ? "r+b" : "w");
 
     u_int64_t size = 0;
 
-    if (!fileExists) {
+    if (!isFileExists) {
         fwrite(&size, sizeof(u_int64_t), 1, usersDB);
     } else {
         fread(&size, sizeof(u_int64_t), 1, usersDB);
     }
 
-    // input username
+    // Input username
     while (!isValidUsername) {
         mvprintw(currentLine, 0, "New username:\n");
         clearLine(currentLine + 1, 0);
@@ -77,6 +73,7 @@ void signUp() {
         }
     }
 
+    // Write new user to db
     if (usersDB != NULL) {
         uint8_t hash[SIZE_OF_SHA_256_HASH];
         calc_sha_256(hash, newPassword, strlen(newPassword));
@@ -94,6 +91,11 @@ void signUp() {
 
         fclose(usersDB);
     } else {
-        fprintf(stderr, "Error: unable to open usersDB file.\n");
+        fprintf(stderr, "Error: unable to open users DB file.\n");
+        return false;
     }
+
+    erase();
+    echo();
+    return true;
 }
