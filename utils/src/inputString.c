@@ -1,5 +1,5 @@
 #include "curses.h"
-#include "inputString.h"
+#include "utils.h"
 
 static inline int max(int a, int b) { return a > b ? a : b; }
 

@@ -19,6 +19,8 @@
 		"curses.h": "c",
 		"sha256.h": "c",
 		"system_error": "c",
-		"xlocale": "c"
+		"xlocale": "c",
+		"inttypes.h": "c",
+		"utils.h": "c"
 	},
 }

@@ -14,3 +14,6 @@ add_subdirectory(menu/src)
 
 # Utils
 add_subdirectory(utils/src)
+
+# Auth
+add_subdirectory(auth/src)
