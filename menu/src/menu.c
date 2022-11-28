@@ -4,19 +4,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define GREEN_TEXT_COLOR 2
+
 void printMenuOptions(char **menuOptions, size_t menuSize, int selectedItem,
                       int firstLine) {
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(GREEN_TEXT_COLOR, COLOR_GREEN, COLOR_BLACK);
 
     for (int i = 0; i < menuSize; ++i) {
         if (selectedItem == i) {
-            attron(COLOR_PAIR(1));
+            attron(COLOR_PAIR(GREEN_TEXT_COLOR));
         }
 
         mvprintw(firstLine + i, 0, "%s\n", menuOptions[i]);
 
         if (selectedItem == i) {
-            attroff(COLOR_PAIR(1));
+            attroff(COLOR_PAIR(GREEN_TEXT_COLOR));
         }
     }
 }
@@ -80,6 +82,7 @@ int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,
 
     erase();
     keypad(stdscr, FALSE);
+    echo();
 
     return selected;
 }
