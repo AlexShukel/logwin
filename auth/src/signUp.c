@@ -1,9 +1,10 @@
+#include "app.h"
 #include "auth.h"
-#include "constants.h"
 #include "curses.h"
 #include "sha256.h"
 #include "utils.h"
 #include <stdbool.h>
+
 
 bool signUp() {
     char newUsername[USERNAME_LENGTH];

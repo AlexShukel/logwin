@@ -2,6 +2,7 @@ file(GLOB SRC_FILES *.c)
 
 add_library(auth STATIC ${SRC_FILES})
 
+target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/auth")
 target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/pdcurses")
 

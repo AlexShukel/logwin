@@ -1,5 +1,5 @@
+#include "app.h"
 #include "auth.h"
-#include "constants.h"
 #include "curses.h"
 #include "menu.h"
 #include "sha256.h"
@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 
 void initConsole() {
     initscr();
@@ -19,7 +20,9 @@ void initConsole() {
     }
 
     start_color();
+    init_pair(DEFAULT_TEXT_COLOR, COLOR_WHITE, COLOR_BLACK);
     init_pair(ERROR_TEXT_COLOR, COLOR_RED, COLOR_BLACK);
+    init_pair(GREEN_TEXT_COLOR, COLOR_GREEN, COLOR_BLACK);
 }
 
 int main() {
@@ -36,25 +39,16 @@ int main() {
     int answer = showMenu("Authentication options:", options, 3,
                           "Login to existing account or create a new one.");
 
-    switch (answer) {
-
-    case LOGIN: {
+    if (answer == LOGIN) {
         login();
-        break;
-    }
-
-    case SIGN_UP: {
+    } else if (answer == SIGN_UP) {
         bool signedUp = signUp();
         if (signedUp) {
             printw("Signed up successfully!\nNow you can login to your "
                    "account.\n");
             login();
         };
-        break;
-    }
-
-    // TODO: delete this code
-    default: {
+    } else {
         FILE *usersDB = fopen(USERS_DB, "rb");
 
         if (usersDB != NULL) {
@@ -77,8 +71,6 @@ int main() {
         } else {
             printf("Unable to open usersDB file\n");
         }
-        break;
-    }
     }
 
     endwin();

@@ -1,8 +1,9 @@
+#include "app.h"
 #include "auth.h"
-#include "constants.h"
 #include "curses.h"
 #include "utils.h"
 #include <stdbool.h>
+
 
 void login() {
     char username[USERNAME_LENGTH];

@@ -7,3 +7,7 @@ add_library(pdcurses SHARED IMPORTED)
 set_target_properties(pdcurses PROPERTIES IMPORTED_IMPLIB ${CMAKE_SOURCE_DIR}/lib/pdcurses.dll)
 
 target_link_libraries(menu pdcurses)
+
+# utils
+target_link_libraries(menu utils)
+target_include_directories(menu PUBLIC "${PROJECT_SOURCE_DIR}/include/utils")
