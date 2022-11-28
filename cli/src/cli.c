@@ -3,12 +3,10 @@
 #include "curses.h"
 #include "menu.h"
 #include "sha256.h"
-#include "utils.h"
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 
 void initConsole() {
     initscr();

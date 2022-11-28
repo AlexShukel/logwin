@@ -1,9 +1,11 @@
+#include "app.h"
 #include "curses.h"
 #include "menu.h"
 #include "utils.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 
 void printMenuOptions(char **menuOptions, size_t menuSize, int selectedItem,
                       int firstLine) {

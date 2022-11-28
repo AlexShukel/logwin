@@ -5,7 +5,11 @@
 #define PASSWORD_LENGTH 255
 #define USERS_DB "usersDB.bin"
 
-#include "sha256.h"
+#define DEFAULT_TEXT_COLOR 0
+#define ERROR_TEXT_COLOR 1
+#define GREEN_TEXT_COLOR 2
+
+#include "./sha256/sha256.h"
 
 enum UserAction { LOGIN, SIGN_UP };
 
