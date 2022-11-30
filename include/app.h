@@ -1,8 +1,8 @@
 #ifndef APP_H
 #define APP_H
 
-#define USERNAME_LENGTH 255
-#define PASSWORD_LENGTH 255
+#define USERNAME_LENGTH 32
+#define PASSWORD_LENGTH 32
 #define USERS_DB "usersDB.bin"
 
 #define DEFAULT_TEXT_COLOR 0
@@ -17,5 +17,12 @@ typedef struct {
     char name[USERNAME_LENGTH];
     uint8_t hash[SIZE_OF_SHA_256_HASH];
 } User;
+
+typedef struct {
+    char name[USERNAME_LENGTH];
+    char masterPassword[PASSWORD_LENGTH];
+} LoginData;
+
+extern LoginData loginData;
 
 #endif

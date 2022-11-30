@@ -4,7 +4,7 @@
 #include "sha256.h"
 #include "utils.h"
 #include <stdbool.h>
-
+#include <stdint.h>
 
 bool signUp() {
     char newUsername[USERNAME_LENGTH];
@@ -13,14 +13,14 @@ bool signUp() {
 
     bool isFileExists = fileExists(USERS_DB);
 
-    FILE *usersDB = fopen(USERS_DB, isFileExists ? "r+b" : "w");
+    FILE *usersDB = fopen(USERS_DB, isFileExists ? "r+b" : "wb");
 
-    u_int64_t size = 0;
+    uint64_t size = 0;
 
-    if (!isFileExists) {
-        fwrite(&size, sizeof(u_int64_t), 1, usersDB);
+    if (isFileExists) {
+        size = getElementsSize(usersDB);
     } else {
-        fread(&size, sizeof(u_int64_t), 1, usersDB);
+        fwrite(&size, sizeof(uint64_t), 1, usersDB);
     }
 
     // Input username
@@ -39,7 +39,7 @@ bool signUp() {
             }
         }
 
-        fseek(usersDB, sizeof(u_int64_t), SEEK_SET);
+        fseek(usersDB, sizeof(uint64_t), SEEK_SET);
 
         if (usernameExists) {
             printErrorMessage(currentLine - 1, 0,
@@ -88,7 +88,7 @@ bool signUp() {
         fwrite(&user, sizeof(User), 1, usersDB);
         rewind(usersDB);
         ++size;
-        fwrite(&size, sizeof(u_int64_t), 1, usersDB);
+        fwrite(&size, sizeof(uint64_t), 1, usersDB);
 
         fclose(usersDB);
     } else {

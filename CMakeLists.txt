@@ -20,3 +20,6 @@ add_subdirectory(utils/test)
 
 # Auth
 add_subdirectory(auth/src)
+
+# Main
+add_subdirectory(main/src)

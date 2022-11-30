@@ -1,12 +1,15 @@
 #include "app.h"
 #include "auth.h"
 #include "curses.h"
+#include "main.h"
 #include "menu.h"
 #include "sha256.h"
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+LoginData loginData;
 
 void initConsole() {
     initscr();
@@ -34,24 +37,32 @@ int main() {
     char *options[] = {loginOption, singUpOption, printAllUsers};
 
     // Get answer from menu
-    int answer = showMenu("Authentication options:", options, 3,
+    int answer = showMenu("Authentication options:", options,
+                          sizeof(options) / sizeof(char *),
                           "Login to existing account or create a new one.");
 
     if (answer == LOGIN) {
-        login();
+        if (!login()) {
+            endwin();
+            return 0;
+        }
     } else if (answer == SIGN_UP) {
         bool signedUp = signUp();
         if (signedUp) {
             printw("Signed up successfully!\nNow you can login to your "
                    "account.\n");
-            login();
+            if (!login()) {
+                endwin();
+                return 0;
+            }
         };
-    } else {
+    } else if (answer == 2) {
+        // TODO: delete test code
         FILE *usersDB = fopen(USERS_DB, "rb");
 
         if (usersDB != NULL) {
-            u_int64_t size;
-            fread(&size, sizeof(u_int64_t), 1, usersDB);
+            uint64_t size;
+            fread(&size, sizeof(uint64_t), 1, usersDB);
 
             for (int i = 0; i < size; ++i) {
                 User user;
@@ -69,7 +80,12 @@ int main() {
         } else {
             printf("Unable to open usersDB file\n");
         }
+    } else {
+        endwin();
+        return 0;
     }
+
+    logwinMain();
 
     endwin();
     return 0;

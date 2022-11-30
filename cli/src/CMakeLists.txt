@@ -18,6 +18,10 @@ target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include/utils")
 target_link_libraries(logwin auth)
 target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include/auth")
 
+# main
+target_link_libraries(logwin main)
+target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include/main")
+
 add_custom_command(
     TARGET logwin POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
