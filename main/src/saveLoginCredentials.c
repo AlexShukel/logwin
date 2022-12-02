@@ -13,6 +13,8 @@ void saveLoginCredentials(const LoginCredentials *credentials) {
 
     FILE *userDataDB = fopen(filename, isFileExists ? "r+b" : "wb");
 
+    // TODO: handle fopen error
+
     uint64_t size = 0;
 
     if (isFileExists) {

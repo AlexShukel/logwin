@@ -9,6 +9,7 @@
 #define ERROR_TEXT_COLOR 1
 #define GREEN_TEXT_COLOR 2
 
+#include "./aes/aes.h"
 #include "./sha256/sha256.h"
 
 enum UserAction { LOGIN, SIGN_UP };
@@ -20,7 +21,8 @@ typedef struct {
 
 typedef struct {
     char name[USERNAME_LENGTH];
-    char masterPassword[PASSWORD_LENGTH];
+    uint8_t key[PASSWORD_LENGTH];
+    uint8_t iv[AES_BLOCKLEN];
 } LoginData;
 
 extern LoginData loginData;

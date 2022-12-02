@@ -3,6 +3,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+void decryptPassword(LoginCredentials *credentials) {
+    AES_init_ctx_iv(&credentials->aesContext, loginData.key, loginData.iv);
+    AES_CBC_decrypt_buffer(&credentials->aesContext, credentials->cipher,
+                           PASSWORD_LENGTH);
+}
+
 void listAllCredentials() {
     char filename[USERNAME_LENGTH + 4];
     getUserDataFilename(filename);
@@ -21,11 +27,16 @@ void listAllCredentials() {
 
     uint64_t size = getElementsSize(userDataDB);
 
+    // TODO: log into curses terminal
     for (uint64_t i = 0; i < size; ++i) {
         LoginCredentials credentials;
         fread(&credentials, sizeof(LoginCredentials), 1, userDataDB);
         printf("Username: %s\n", credentials.username);
-        printf("Password: %s\n", credentials.password);
+
+        decryptPassword(&credentials);
+
+        printf("%s\n", credentials.cipher);
+        printf("\n");
         printf("----------------------------------------------------\n");
     }
 

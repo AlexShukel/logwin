@@ -1,13 +1,15 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include "../aes/aes.h"
 #include "../app.h"
 
 enum MainInterfaceOptions { ADD_NEW, LIST_ALL };
 
 typedef struct {
     char username[USERNAME_LENGTH];
-    char password[PASSWORD_LENGTH];
+    char cipher[PASSWORD_LENGTH];
+    struct AES_ctx aesContext;
 } LoginCredentials;
 
 void logwinMain();
