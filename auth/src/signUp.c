@@ -57,7 +57,7 @@ void signUp() {
     while (!isValidUsername) {
         mvprintw(currentLine, 0, "New username:\n");
         clearLine(currentLine + 1, 0);
-        inputString(newUsername, USERNAME_LENGTH);
+        inputString(newUsername, USERNAME_LENGTH, false);
 
         bool usernameExists = false;
         for (uint64_t i = 0; i < size; ++i) {
@@ -77,9 +77,6 @@ void signUp() {
         }
     }
 
-    // Disable echo for password input
-    noecho();
-
     bool arePasswordsSame = false;
     char newPassword[PASSWORD_LENGTH];
     char repeatedNewPassword[PASSWORD_LENGTH];
@@ -88,9 +85,10 @@ void signUp() {
 
     uint8_t bitFlag = 0;
 
+    // Input master password
     do {
         mvprintw(currentLine, 0, "New master password:\n");
-        inputString(newPassword, PASSWORD_LENGTH);
+        inputString(newPassword, PASSWORD_LENGTH, true);
 
         bitFlag = isStrongPassword(newPassword);
 
@@ -101,9 +99,10 @@ void signUp() {
         }
     } while (bitFlag != 0);
 
+    // Repeat master password
     while (!arePasswordsSame) {
         mvprintw(currentLine + 2, 0, "Repeat you master password:\n");
-        inputString(repeatedNewPassword, PASSWORD_LENGTH);
+        inputString(repeatedNewPassword, PASSWORD_LENGTH, true);
 
         if (strcmp(newPassword, repeatedNewPassword) == 0) {
             arePasswordsSame = true;
@@ -132,5 +131,4 @@ void signUp() {
     fclose(usersDB);
 
     erase();
-    echo();
 }

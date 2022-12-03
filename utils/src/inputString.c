@@ -1,9 +1,16 @@
 #include "curses.h"
 #include "utils.h"
+#include <stdbool.h>
 
 static inline int max(int a, int b) { return a > b ? a : b; }
 
-void inputString(char *str, size_t size) {
+void inputString(char *str, size_t size, bool noEcho) {
+    if (noEcho) {
+        noecho();
+    }
+
+    int currentY = stdscr->_cury, currentX = stdscr->_curx;
+
     int i = 0;
     while (1) {
         int ch = getch();
@@ -18,10 +25,16 @@ void inputString(char *str, size_t size) {
 
         if (ch == '\b') {
             i = max(0, i - 1);
-            mvdelch(stdscr->_cury, stdscr->_curx);
+            currentX = max(0, currentX - 1);
+            mvdelch(currentY, currentX);
             continue;
         }
 
+        if (noEcho) {
+            mvprintw(currentY, currentX, "*");
+        }
+
+        ++currentX;
         str[i] = ch;
         ++i;
 
@@ -31,4 +44,9 @@ void inputString(char *str, size_t size) {
     }
 
     str[i] = '\0';
+    echo();
+
+    if (noEcho) {
+        clearLine(currentY, currentX);
+    }
 }

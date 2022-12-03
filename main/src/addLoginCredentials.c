@@ -7,13 +7,11 @@ void addLoginCredentials() {
     LoginCredentials credentials;
 
     printw("Input username:\n");
-    inputString(credentials.username, USERNAME_LENGTH);
+    inputString(credentials.username, USERNAME_LENGTH, false);
 
     char password[PASSWORD_LENGTH];
     printw("Input password:\n");
-    noecho();
-    inputString(password, PASSWORD_LENGTH);
-    echo();
+    inputString(password, PASSWORD_LENGTH, true);
 
     nullifyString(password, PASSWORD_LENGTH);
 

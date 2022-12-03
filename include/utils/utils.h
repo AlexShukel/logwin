@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 // Manipulations with screen
-void inputString(char *str, size_t size);
+void inputString(char *str, size_t size, bool noEcho);
 
 void printColorText(int color, const char *format, ...);
 void va_printColorText(int color, const char *format, va_list argptr);
