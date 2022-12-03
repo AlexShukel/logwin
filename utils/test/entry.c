@@ -2,6 +2,12 @@
 #include <stdbool.h>
 extern GcladosTest __gcladosTest_file_exists_1(char *description);
 extern GcladosTest __gcladosTest_file_exists_2(char *description);
+extern GcladosTest __gcladosTest_contains_specified_char_1(char *description);
+extern GcladosTest __gcladosTest_contains_specified_char_2(char *description);
+extern GcladosTest __gcladosTest_contains_special_char_1(char *description);
+extern GcladosTest __gcladosTest_contains_special_char_2(char *description);
+extern GcladosTest __gcladosTest_is_strong_password_1(char *description);
+extern GcladosTest __gcladosTest_is_strong_password_2(char *description);
 extern GcladosTest __gcladosTest_nullify_stirng_1(char *description);
 
 int main() {
@@ -13,12 +19,22 @@ int main() {
     };
     GcladosTestSuite gcladosTestSuite0 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/utils/test/fileExists.test.c", gcladosTests0, 2);
     GcladosTest gcladosTests1[] = {
+        __gcladosTest_contains_specified_char_1("Should return true if password contains specified char"),
+        __gcladosTest_contains_specified_char_2("Should return false if password does not contain specified char"),
+        __gcladosTest_contains_special_char_1("Should return true if password contains special char"),
+        __gcladosTest_contains_special_char_2("Should return false if password does not contain special char"),
+        __gcladosTest_is_strong_password_1("Should return empty bit-flag for strong password"),
+        __gcladosTest_is_strong_password_2("Should return non empty bit-flag for weak password"),
+    };
+    GcladosTestSuite gcladosTestSuite1 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/utils/test/isStrongPassword.test.c", gcladosTests1, 6);
+    GcladosTest gcladosTests2[] = {
         __gcladosTest_nullify_stirng_1("Should nullify the rest of the string"),
     };
-    GcladosTestSuite gcladosTestSuite1 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/utils/test/nullifyString.test.c", gcladosTests1, 1);
+    GcladosTestSuite gcladosTestSuite2 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/utils/test/nullifyString.test.c", gcladosTests2, 1);
     GcladosTestSuite gcladosTestSuites[] = {
         gcladosTestSuite0,
         gcladosTestSuite1,
+        gcladosTestSuite2,
     };
-    return gcladosRunTestSuites(gcladosTestSuites, 2);
+    return gcladosRunTestSuites(gcladosTestSuites, 3);
 }
