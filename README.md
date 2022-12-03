@@ -11,7 +11,7 @@ Navigation:
 -   [Cmake](https://cmake.org/download/) executable
 -   [Ninja](https://github.com/ninja-build/ninja/releases) executable
 
-Add paths to these executables in `PATH` environment variable.
+Add paths to these executables in `PATH` environment variable. [how to add environment variable on windows](<https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)>)
 
 ### Steps to build:
 
