@@ -1,12 +1,17 @@
 #include "app.h"
 #include "auth.h"
 #include "curses.h"
+#include "main.h"
 #include "menu.h"
 #include "sha256.h"
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+// Global variables
+LoginData loginData = {.iv = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                              0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}};
 
 void initConsole() {
     initscr();
@@ -30,46 +35,34 @@ int main() {
     // List of options
     char loginOption[] = "Login";
     char singUpOption[] = "Sign up";
-    char printAllUsers[] = "Print all users";
-    char *options[] = {loginOption, singUpOption, printAllUsers};
+    char *options[] = {loginOption, singUpOption};
 
     // Get answer from menu
-    int answer = showMenu("Authentication options:", options, 3,
+    int answer = showMenu("Authentication options:", options,
+                          sizeof(options) / sizeof(char *),
                           "Login to existing account or create a new one.");
 
     if (answer == LOGIN) {
-        login();
+        if (!login()) {
+            endwin();
+            return 0;
+        }
     } else if (answer == SIGN_UP) {
         bool signedUp = signUp();
         if (signedUp) {
             printw("Signed up successfully!\nNow you can login to your "
                    "account.\n");
-            login();
+            if (!login()) {
+                endwin();
+                return 0;
+            }
         };
     } else {
-        FILE *usersDB = fopen(USERS_DB, "rb");
-
-        if (usersDB != NULL) {
-            u_int64_t size;
-            fread(&size, sizeof(u_int64_t), 1, usersDB);
-
-            for (int i = 0; i < size; ++i) {
-                User user;
-
-                fread(&user, sizeof(User), 1, usersDB);
-
-                printf("%s\n", user.name);
-                for (int i = 0; i < SIZE_OF_SHA_256_HASH; ++i) {
-                    printf("%c", user.hash[i]);
-                }
-                printf("\n");
-            }
-
-            fclose(usersDB);
-        } else {
-            printf("Unable to open usersDB file\n");
-        }
+        endwin();
+        return 0;
     }
+
+    logwinMain();
 
     endwin();
     return 0;

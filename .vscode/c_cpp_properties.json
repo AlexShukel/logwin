@@ -3,10 +3,12 @@
         {
             "name": "Cygwin configuration",
             "compilerPath": "C:\\cygwin64\\bin\\gcc.exe",
-            "intelliSenseMode": "windows-msvc-x64",
+            "intelliSenseMode": "linux-gcc-x64",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "includePath": ["${workspaceFolder}/include/**"]
+            "includePath": [
+                "${workspaceFolder}/include/**"
+            ]
         }
     ],
     "version": 4
