@@ -41,6 +41,7 @@
 		"unordered_map": "c",
 		"vector": "c",
 		"setjmp.h": "c",
-		"cstring": "c"
+		"cstring": "c",
+		"auth.h": "c"
 	}
 }

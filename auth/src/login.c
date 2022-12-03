@@ -27,12 +27,10 @@ void login() {
     while (!isValidLogin) {
         mvprintw(currentLine, 0, "Enter your username:\n");
         clearLine(currentLine + 1, 0);
-        inputString(loginData.name, USERNAME_LENGTH);
+        inputString(loginData.name, USERNAME_LENGTH, false);
 
-        noecho();
         mvprintw(currentLine + 2, 0, "Enter your password:\n");
-        inputString(masterPassword, PASSWORD_LENGTH);
-        echo();
+        inputString(masterPassword, PASSWORD_LENGTH, true);
 
         for (uint64_t i = 0; i < size; ++i) {
             User user;

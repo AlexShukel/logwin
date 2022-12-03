@@ -13,7 +13,7 @@
 #include "./sha256/sha256.h"
 #include <setjmp.h>
 
-enum UserAction { LOGIN, SIGN_UP };
+enum AuthUserAction { LOGIN, SIGN_UP };
 
 enum ErrorCode {
     IGNORE,
