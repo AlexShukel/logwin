@@ -6,17 +6,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 void printMenuOptions(char **menuOptions, size_t menuSize, int selectedItem,
                       int firstLine) {
     for (int i = 0; i < menuSize + 1; ++i) {
         short textColor =
             selectedItem == i ? GREEN_TEXT_COLOR : DEFAULT_TEXT_COLOR;
-        attron(COLOR_PAIR(textColor));
-        mvprintw(firstLine + i, 0, "%s\n",
-                 i == menuSize ? "Exit" : menuOptions[i]);
-        attroff(COLOR_PAIR(textColor));
+
+        printColorText(firstLine + i, 0, textColor, "%s",
+                       i == menuSize ? "Exit" : menuOptions[i]);
     }
+
+    printw("\n");
 }
 
 int showMenu(char *menuTitle, char **menuOptions, size_t menuSize,

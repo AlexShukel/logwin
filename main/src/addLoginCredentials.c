@@ -11,7 +11,9 @@ void addLoginCredentials() {
 
     char password[PASSWORD_LENGTH];
     printw("Input password:\n");
+    noecho();
     inputString(password, PASSWORD_LENGTH);
+    echo();
 
     nullifyString(password, PASSWORD_LENGTH);
 
