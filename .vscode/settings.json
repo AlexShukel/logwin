@@ -42,6 +42,7 @@
 		"vector": "c",
 		"setjmp.h": "c",
 		"cstring": "c",
-		"auth.h": "c"
+		"auth.h": "c",
+		"aes.h": "c"
 	}
 }

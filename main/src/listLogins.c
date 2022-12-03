@@ -6,13 +6,13 @@
 #include <stdint.h>
 #include <stdio.h>
 
-void decryptPassword(LoginCredentials *credentials) {
+void decryptPassword(Login *credentials) {
     AES_init_ctx_iv(&credentials->aesContext, loginData.key, loginData.iv);
     AES_CBC_decrypt_buffer(&credentials->aesContext, credentials->cipher,
                            PASSWORD_LENGTH);
 }
 
-void listAllCredentials() {
+void listLogins() {
     char filename[USERNAME_LENGTH + 4];
     getUserDataFilename(filename);
 
@@ -32,10 +32,11 @@ void listAllCredentials() {
         printColorText(GREEN_TEXT_COLOR, "In total: %d entries:\n", size);
 
         for (uint64_t i = 0; i < size; ++i) {
-            LoginCredentials credentials;
-            fread(&credentials, sizeof(LoginCredentials), 1, userDataDB);
+            Login credentials;
+            fread(&credentials, sizeof(Login), 1, userDataDB);
             decryptPassword(&credentials);
 
+            printw("Url: %s\n", credentials.url);
             printw("Username: %s\n", credentials.username);
             printw("Password: %s\n", credentials.cipher);
             printw("--------\n");
