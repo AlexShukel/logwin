@@ -6,8 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
-void saveLoginCredentials(const LoginCredentials *credentials) {
+void saveLoginCredentials(const Login *credentials) {
     char filename[USERNAME_LENGTH + 4];
     getUserDataFilename(filename);
 
@@ -31,7 +30,7 @@ void saveLoginCredentials(const LoginCredentials *credentials) {
     ++size;
     fwrite(&size, sizeof(uint64_t), 1, userDataDB);
     fseek(userDataDB, 0, SEEK_END);
-    fwrite(credentials, sizeof(LoginCredentials), 1, userDataDB);
+    fwrite(credentials, sizeof(Login), 1, userDataDB);
 
     fclose(userDataDB);
 }

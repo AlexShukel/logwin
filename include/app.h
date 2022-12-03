@@ -3,6 +3,7 @@
 
 #define USERNAME_LENGTH 32
 #define PASSWORD_LENGTH 32
+#define URL_LENGTH 128
 #define USERS_DB "usersDB.bin"
 
 #define DEFAULT_TEXT_COLOR 0
