@@ -1,9 +1,11 @@
 #include "app.h"
 #include "main.h"
 #include "utils.h"
+#include <setjmp.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+
 
 void saveLoginCredentials(const LoginCredentials *credentials) {
     char filename[USERNAME_LENGTH + 4];
@@ -13,7 +15,9 @@ void saveLoginCredentials(const LoginCredentials *credentials) {
 
     FILE *userDataDB = fopen(filename, isFileExists ? "r+b" : "wb");
 
-    // TODO: handle fopen error
+    if (userDataDB == NULL) {
+        longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
+    }
 
     uint64_t size = 0;
 

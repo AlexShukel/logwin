@@ -11,8 +11,15 @@
 
 #include "./aes/aes.h"
 #include "./sha256/sha256.h"
+#include <setjmp.h>
 
 enum UserAction { LOGIN, SIGN_UP };
+
+enum ErrorCode {
+    IGNORE,
+    SYSTEM_ERROR,
+    NO_USERS_FOUND,
+};
 
 typedef struct {
     char name[USERNAME_LENGTH];
@@ -26,5 +33,6 @@ typedef struct {
 } LoginData;
 
 extern LoginData loginData;
+extern jmp_buf exceptionJmpBuffer;
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-bool login();
-bool signUp();
+void login();
+void signUp();
 
 #endif

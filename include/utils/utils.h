@@ -9,8 +9,10 @@
 
 // Manipulations with screen
 void inputString(char *str, size_t size);
-void printColorText(int y, int x, int color, const char *format, ...);
-void printErrorMessage(int y, int x, char *message);
+void printColorText(int color, const char *format, ...);
+void mvprintColorText(int y, int x, int color, const char *format, ...);
+void printErrorMessage(const char *message);
+void mvprintErrorMessage(int y, int x, const char *message);
 void clearLine(int y, int x);
 
 // General utils

@@ -2,6 +2,6 @@
 #include "curses.h"
 #include "utils.h"
 
-void printErrorMessage(int y, int x, char *message) {
-    printColorText(y, x, ERROR_TEXT_COLOR, message);
+void printErrorMessage(const char *message) {
+    printColorText(ERROR_TEXT_COLOR, message);
 }

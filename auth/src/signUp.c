@@ -3,10 +3,11 @@
 #include "curses.h"
 #include "sha256.h"
 #include "utils.h"
+#include <setjmp.h>
 #include <stdbool.h>
 #include <stdint.h>
 
-bool signUp() {
+void signUp() {
     char newUsername[USERNAME_LENGTH];
     bool isValidUsername = false;
     int currentLine = stdscr->_cury + 1;
@@ -14,6 +15,10 @@ bool signUp() {
     bool isFileExists = fileExists(USERS_DB);
 
     FILE *usersDB = fopen(USERS_DB, isFileExists ? "r+b" : "wb");
+
+    if (usersDB == NULL) {
+        longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
+    }
 
     uint64_t size = 0;
 
@@ -23,6 +28,10 @@ bool signUp() {
         fwrite(&size, sizeof(uint64_t), 1, usersDB);
     }
 
+    User users[size];
+
+    fread(users, sizeof(User), size, usersDB);
+
     // Input username
     while (!isValidUsername) {
         mvprintw(currentLine, 0, "New username:\n");
@@ -30,10 +39,8 @@ bool signUp() {
         inputString(newUsername, USERNAME_LENGTH);
 
         bool usernameExists = false;
-        for (int i = 0; i < size; ++i) {
-            User user;
-            fread(&user, sizeof(User), 1, usersDB);
-            if (strcmp(user.name, newUsername) == 0) {
+        for (uint64_t i = 0; i < size; ++i) {
+            if (strcmp(users[i].name, newUsername) == 0) {
                 usernameExists = true;
                 break;
             }
@@ -42,8 +49,8 @@ bool signUp() {
         fseek(usersDB, sizeof(uint64_t), SEEK_SET);
 
         if (usernameExists) {
-            printErrorMessage(currentLine - 1, 0,
-                              "This username already exists!");
+            mvprintErrorMessage(currentLine - 1, 0,
+                                "This username already exists!");
         } else {
             isValidUsername = true;
         }
@@ -68,35 +75,29 @@ bool signUp() {
         if (strcmp(newPassword, repeatedNewPassword) == 0) {
             arePasswordsSame = true;
         } else {
-            printErrorMessage(currentLine - 1, 0,
-                              "Master password does not match with repeated "
-                              "password. Try again.\n");
+            mvprintErrorMessage(currentLine - 1, 0,
+                                "Master password does not match with repeated "
+                                "password. Try again.\n");
         }
     }
 
     // Write new user to db
-    if (usersDB != NULL) {
-        uint8_t hash[SIZE_OF_SHA_256_HASH];
-        calc_sha_256(hash, newPassword, strlen(newPassword));
+    uint8_t hash[SIZE_OF_SHA_256_HASH];
+    calc_sha_256(hash, newPassword, strlen(newPassword));
 
-        User user;
+    User user;
 
-        memcpy(user.name, newUsername, USERNAME_LENGTH);
-        memcpy(user.hash, hash, SIZE_OF_SHA_256_HASH);
+    memcpy(user.name, newUsername, USERNAME_LENGTH);
+    memcpy(user.hash, hash, SIZE_OF_SHA_256_HASH);
 
-        fseek(usersDB, 0, SEEK_END);
-        fwrite(&user, sizeof(User), 1, usersDB);
-        rewind(usersDB);
-        ++size;
-        fwrite(&size, sizeof(uint64_t), 1, usersDB);
+    fseek(usersDB, 0, SEEK_END);
+    fwrite(&user, sizeof(User), 1, usersDB);
+    rewind(usersDB);
+    ++size;
+    fwrite(&size, sizeof(uint64_t), 1, usersDB);
 
-        fclose(usersDB);
-    } else {
-        fprintf(stderr, "Error: unable to open users DB file.\n");
-        return false;
-    }
+    fclose(usersDB);
 
     erase();
     echo();
-    return true;
 }
