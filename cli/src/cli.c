@@ -4,7 +4,9 @@
 #include "main.h"
 #include "menu.h"
 #include "sha256.h"
+#include <errno.h>
 #include <inttypes.h>
+#include <setjmp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +14,7 @@
 // Global variables
 LoginData loginData = {.iv = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
                               0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}};
+jmp_buf exceptionJmpBuffer;
 
 void initConsole() {
     initscr();
@@ -32,6 +35,32 @@ int main() {
     initConsole();
     printw("Welcome to logwin!\n");
 
+    // Errors handling
+    int exitCode = setjmp(exceptionJmpBuffer);
+
+    if (exitCode != IGNORE) {
+        endwin();
+
+        switch (exitCode) {
+        case SYSTEM_ERROR: {
+            perror("");
+            break;
+        }
+
+        case NO_USERS_FOUND: {
+            fprintf(
+                stderr,
+                "No users found in the database. Please, create an account.");
+            break;
+        }
+
+        default:
+            break;
+        }
+
+        return 0;
+    }
+
     // List of options
     char loginOption[] = "Login";
     char singUpOption[] = "Sign up";
@@ -43,20 +72,12 @@ int main() {
                           "Login to existing account or create a new one.");
 
     if (answer == LOGIN) {
-        if (!login()) {
-            endwin();
-            return 0;
-        }
+        login();
     } else if (answer == SIGN_UP) {
-        bool signedUp = signUp();
-        if (signedUp) {
-            printw("Signed up successfully!\nNow you can login to your "
-                   "account.\n");
-            if (!login()) {
-                endwin();
-                return 0;
-            }
-        };
+        signUp();
+        printw("Signed up successfully!\nNow you can login to your "
+               "account.\n");
+        login();
     } else {
         endwin();
         return 0;
@@ -64,6 +85,5 @@ int main() {
 
     logwinMain();
 
-    endwin();
     return 0;
 }

@@ -2,24 +2,22 @@
 #include "auth.h"
 #include "curses.h"
 #include "utils.h"
+#include <setjmp.h>
 #include <stdbool.h>
 #include <stdint.h>
 
-bool login() {
+void login() {
     char masterPassword[PASSWORD_LENGTH];
     bool isValidLogin = false;
 
     if (!fileExists(USERS_DB)) {
-        fprintf(stderr,
-                "No users found in the database. Please, create an account.");
-        return false;
+        longjmp(exceptionJmpBuffer, NO_USERS_FOUND);
     }
 
     FILE *usersDB = fopen(USERS_DB, "rb");
 
     if (usersDB == NULL) {
-        fprintf(stderr, "Error: unable to open users DB file.\n");
-        return false;
+        longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
     }
 
     uint64_t size = 0;
@@ -53,7 +51,7 @@ bool login() {
         fseek(usersDB, sizeof(uint64_t), SEEK_SET);
 
         if (!isValidLogin) {
-            printErrorMessage(
+            mvprintErrorMessage(
                 currentLine - 1, 0,
                 "Username or password is invalid. Please, try again.\n");
         }
@@ -64,5 +62,4 @@ bool login() {
 
     erase();
     fclose(usersDB);
-    return true;
 }
