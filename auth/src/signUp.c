@@ -7,6 +7,27 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+void erasePasswordStrengthCriteria(int firstLine) {
+    for (int i = 0; i < NUMBER_OF_CRITERIA + 1; ++i) {
+        mvdeleteln(firstLine, 0);
+    }
+}
+
+void printPasswordStrengthCriterion(int y, uint8_t bitFlag, uint8_t criteria) {
+    int color = bitFlag & criteria ? ERROR_TEXT_COLOR : GREEN_TEXT_COLOR;
+
+    mvprintColorText(y, 0, color, "%s", strPasswordStrengthError(criteria));
+}
+
+void printPasswordStrengthCriteria(int firstLine, uint8_t bitFlag) {
+    mvprintw(firstLine, 0, "Your password must meet following criteria:");
+
+    for (int i = 0; i < NUMBER_OF_CRITERIA; ++i) {
+        printPasswordStrengthCriterion(firstLine + i + 1, bitFlag,
+                                       passwordStrengthCriteria[i]);
+    }
+}
+
 void signUp() {
     char newUsername[USERNAME_LENGTH];
     bool isValidUsername = false;
@@ -65,10 +86,22 @@ void signUp() {
 
     currentLine = stdscr->_cury + 1;
 
-    while (!arePasswordsSame) {
+    uint8_t bitFlag = 0;
+
+    do {
         mvprintw(currentLine, 0, "New master password:\n");
         inputString(newPassword, PASSWORD_LENGTH);
 
+        bitFlag = isStrongPassword(newPassword);
+
+        if (bitFlag != 0) {
+            printPasswordStrengthCriteria(currentLine + 2, bitFlag);
+        } else {
+            erasePasswordStrengthCriteria(currentLine + 2);
+        }
+    } while (bitFlag != 0);
+
+    while (!arePasswordsSame) {
         mvprintw(currentLine + 2, 0, "Repeat you master password:\n");
         inputString(repeatedNewPassword, PASSWORD_LENGTH);
 

@@ -39,6 +39,8 @@
 		"random": "c",
 		"string": "c",
 		"unordered_map": "c",
-		"vector": "c"
+		"vector": "c",
+		"setjmp.h": "c",
+		"cstring": "c"
 	}
 }
