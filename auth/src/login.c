@@ -22,7 +22,8 @@ bool login() {
         return false;
     }
 
-    uint64_t size = getElementsSize(usersDB);
+    uint64_t size = 0;
+    fread(&size, sizeof(uint64_t), 1, usersDB);
 
     int currentLine = stdscr->_cury + 1;
     while (!isValidLogin) {

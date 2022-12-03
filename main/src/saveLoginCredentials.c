@@ -18,7 +18,7 @@ void saveLoginCredentials(const LoginCredentials *credentials) {
     uint64_t size = 0;
 
     if (isFileExists) {
-        size = getElementsSize(userDataDB);
+        fread(&size, sizeof(uint64_t), 1, userDataDB);
     } else {
         fwrite(&size, sizeof(uint64_t), 1, userDataDB);
     }

@@ -25,7 +25,8 @@ void listAllCredentials() {
         return;
     }
 
-    uint64_t size = getElementsSize(userDataDB);
+    uint64_t size = 0;
+    fread(&size, sizeof(uint64_t), 1, userDataDB);
 
     // TODO: log into curses terminal
     for (uint64_t i = 0; i < size; ++i) {

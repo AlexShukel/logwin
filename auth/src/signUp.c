@@ -18,7 +18,7 @@ bool signUp() {
     uint64_t size = 0;
 
     if (isFileExists) {
-        size = getElementsSize(usersDB);
+        fread(&size, sizeof(uint64_t), 1, usersDB);
     } else {
         fwrite(&size, sizeof(uint64_t), 1, usersDB);
     }
