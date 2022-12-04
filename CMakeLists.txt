@@ -20,6 +20,7 @@ add_subdirectory(aes/test)
 
 # Menu
 add_subdirectory(menu/src)
+add_subdirectory(menu/test)
 
 # Utils
 add_subdirectory(utils/src)

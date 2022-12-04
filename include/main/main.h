@@ -3,8 +3,7 @@
 
 #include "../aes/aes.h"
 #include "../app.h"
-
-enum MainInterfaceOptions { ADD_NEW, LIST_ALL };
+#include <stdint.h>
 
 typedef struct {
     char url[URL_LENGTH];
@@ -15,12 +14,16 @@ typedef struct {
 
 void logwinMain();
 
-void saveLoginCredentials(const Login *credentials);
+void saveLoginCredentials(const Login *credentials, int index);
 void addNewLogin();
 
 void listLogins();
+void printLogin(Login login, int firstLine);
+void handleLoginSelect(Login login, int index);
 
 // utils
 void getUserDataFilename(char *filename);
+
+void encryptPassword(struct AES_ctx *aesContext, uint8_t *buffer);
 
 #endif

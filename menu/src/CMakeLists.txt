@@ -1,4 +1,6 @@
-add_library(menu STATIC menu.c)
+file(GLOB SRC_FILES *.c)
+
+add_library(menu STATIC ${SRC_FILES})
 
 target_include_directories(menu PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(menu PUBLIC "${PROJECT_SOURCE_DIR}/include/menu")

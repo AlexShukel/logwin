@@ -43,6 +43,7 @@
 		"setjmp.h": "c",
 		"cstring": "c",
 		"auth.h": "c",
-		"aes.h": "c"
+		"aes.h": "c",
+		"cmath": "c"
 	}
 }
