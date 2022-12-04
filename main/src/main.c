@@ -1,6 +1,11 @@
+#include "app.h"
 #include "curses.h"
 #include "main.h"
 #include "menu.h"
+#include <setjmp.h>
+
+
+enum MainInterfaceOptions { ADD_NEW, LIST_ALL, EXIT };
 
 void logwinMain() {
     erase();
@@ -25,6 +30,10 @@ void logwinMain() {
     case LIST_ALL: {
         listLogins();
         break;
+    }
+
+    case EXIT: {
+        longjmp(exceptionJmpBuffer, MANUAL_EXIT);
     }
 
     default:

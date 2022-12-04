@@ -4,8 +4,6 @@
 #include "../aes/aes.h"
 #include "../app.h"
 
-enum MainInterfaceOptions { ADD_NEW, LIST_ALL };
-
 typedef struct {
     char url[URL_LENGTH];
     char username[USERNAME_LENGTH];
@@ -19,6 +17,8 @@ void saveLoginCredentials(const Login *credentials);
 void addNewLogin();
 
 void listLogins();
+void printLogin(Login login, int firstLine);
+void handleLoginSelect(Login login, int index);
 
 // utils
 void getUserDataFilename(char *filename);

@@ -5,6 +5,7 @@
 #include "utils.h"
 #include <errno.h>
 #include <setjmp.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -14,15 +15,18 @@ void decryptPassword(Login *credentials) {
                            PASSWORD_LENGTH);
 }
 
+void printLogin(Login login, int firstLine) {
+    mvprintw(firstLine + 0, 0, "Url: %s\n", login.url);
+    mvprintw(firstLine + 1, 0, "Username: %s\n", login.username);
+    mvprintw(firstLine + 2, 0, "Password: %s\n", login.cipher);
+}
+
 void printLogins(const Login *logins, int size, int selected, int firstLine) {
     for (int i = 0; i < size; ++i) {
         if (selected == i) {
             attron(COLOR_PAIR(GREEN_TEXT_COLOR));
         }
-        mvprintw(firstLine + i * 4 + 0, 0, "Url: %s\n", logins[i].url);
-        mvprintw(firstLine + i * 4 + 1, 0, "Username: %s\n",
-                 logins[i].username);
-        mvprintw(firstLine + i * 4 + 2, 0, "Password: %s\n", logins[i].cipher);
+        printLogin(logins[i], firstLine + i * 4);
         if (selected == i) {
             attroff(COLOR_PAIR(GREEN_TEXT_COLOR));
         }
@@ -83,6 +87,7 @@ void listLogins() {
         enableKeypad();
         int selected = 0;
 
+        bool hasSelected = true;
         while (1) {
             int ch = getch();
 
@@ -91,6 +96,7 @@ void listLogins() {
             }
 
             if (ESC_KEY == ch) {
+                hasSelected = false;
                 break;
             }
 
@@ -101,6 +107,10 @@ void listLogins() {
             };
 
             printLogins(logins, size, selected, firstLine);
+        }
+
+        if (hasSelected) {
+            handleLoginSelect(logins[selected], selected);
         }
 
         disableKeypad();

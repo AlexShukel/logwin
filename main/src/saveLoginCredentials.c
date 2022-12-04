@@ -29,7 +29,7 @@ void saveLoginCredentials(const Login *credentials) {
     rewind(userDataDB);
     ++size;
     fwrite(&size, sizeof(int), 1, userDataDB);
-    fseek(userDataDB, 0, SEEK_END);
+    fseek(userDataDB, (size - 1) * sizeof(Login), SEEK_CUR);
     fwrite(credentials, sizeof(Login), 1, userDataDB);
 
     fclose(userDataDB);
