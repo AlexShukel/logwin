@@ -2,6 +2,7 @@
 #include "curses.h"
 #include "main.h"
 #include "menu.h"
+#include "utils.h"
 #include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +37,23 @@ void deleteLogin(int index) {
     fclose(userDataDB);
 }
 
+void modifyLogin(Login login, int index) {
+    erase();
+
+    printw("Modify url:\n");
+    modifyString(login.url, URL_LENGTH);
+
+    printw("Modify username:\n");
+    modifyString(login.username, USERNAME_LENGTH);
+
+    printw("Modify password:\n");
+    modifyString(login.cipher, PASSWORD_LENGTH);
+
+    encryptPassword(&login.aesContext, login.cipher);
+
+    saveLoginCredentials(&login, index);
+}
+
 void handleLoginSelect(Login login, int index) {
     erase();
 
@@ -60,7 +78,7 @@ void handleLoginSelect(Login login, int index) {
     }
 
     case MODIFY: {
-        // TODO
+        modifyLogin(login, index);
         break;
     }
 

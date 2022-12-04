@@ -6,7 +6,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
-void saveLoginCredentials(const Login *credentials) {
+int getFileOffset(int index, int size) {
+    if (index < 0 || index >= size) {
+        return size - 1;
+    }
+
+    return index;
+}
+
+void saveLoginCredentials(const Login *credentials, int index) {
     char filename[USERNAME_LENGTH + 4];
     getUserDataFilename(filename);
 
@@ -26,10 +34,14 @@ void saveLoginCredentials(const Login *credentials) {
         fwrite(&size, sizeof(int), 1, userDataDB);
     }
 
-    rewind(userDataDB);
-    ++size;
-    fwrite(&size, sizeof(int), 1, userDataDB);
-    fseek(userDataDB, (size - 1) * sizeof(Login), SEEK_CUR);
+    if (index < 0) {
+        rewind(userDataDB);
+        ++size;
+        fwrite(&size, sizeof(int), 1, userDataDB);
+    }
+
+    fseek(userDataDB, sizeof(int) + getFileOffset(index, size) * sizeof(Login),
+          SEEK_SET);
     fwrite(credentials, sizeof(Login), 1, userDataDB);
 
     fclose(userDataDB);

@@ -34,7 +34,29 @@ void printLogins(const Login *logins, int size, int selected, int firstLine) {
     }
 }
 
+void noLoginsSaved() {
+    printErrorMessage("You haven't saved any logins. Please, go "
+                      "back.\n");
+
+    printw("Press ESC key to go back...\n");
+
+    noecho();
+    while (1) {
+        char ch = getch();
+
+        if (ch == ERR) {
+            continue;
+        }
+
+        if (ch == ESC_KEY) {
+            break;
+        }
+    }
+    echo();
+}
+
 void listLogins() {
+    erase();
     char filename[USERNAME_LENGTH + 4];
     getUserDataFilename(filename);
 
@@ -44,76 +66,64 @@ void listLogins() {
         if (fileExists(filename)) {
             longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
         } else {
-            printErrorMessage("You haven't saved any credentials. Please, go "
-                              "back.\n");
-
-            // TODO: extract this logic
-            printw("Press ESC key to go back...\n");
-
-            noecho();
-            while (1) {
-                char ch = getch();
-
-                if (ch == ERR) {
-                    continue;
-                }
-
-                if (ch == ESC_KEY) {
-                    break;
-                }
-            }
-            echo();
+            noLoginsSaved();
         }
     } else {
         int size = 0;
         fread(&size, sizeof(int), 1, userDataDB);
 
-        Login logins[size];
-        fread(logins, sizeof(Login), size, userDataDB);
+        if (size == 0) {
+            noLoginsSaved();
 
-        for (int i = 0; i < size; ++i) {
-            decryptPassword(&logins[i]);
-        }
+        } else {
+            Login logins[size];
+            fread(logins, sizeof(Login), size, userDataDB);
 
-        fclose(userDataDB);
-
-        printw("Use arrow keys and press enter to select a login. Press ESC to "
-               "go back.\n");
-        printColorText(GREEN_TEXT_COLOR, "In total %d entries:\n", size);
-
-        int firstLine = stdscr->_cury;
-        printLogins(logins, size, 0, firstLine);
-
-        enableKeypad();
-        int selected = 0;
-
-        bool hasSelected = true;
-        while (1) {
-            int ch = getch();
-
-            if (ERR == ch) {
-                continue;
+            for (int i = 0; i < size; ++i) {
+                decryptPassword(&logins[i]);
             }
 
-            if (ESC_KEY == ch) {
-                hasSelected = false;
-                break;
+            fclose(userDataDB);
+
+            printw("Use arrow keys and press enter to select a login. Press "
+                   "ESC to "
+                   "go back.\n");
+            printColorText(GREEN_TEXT_COLOR, "In total %d entries:\n", size);
+
+            int firstLine = stdscr->_cury;
+            printLogins(logins, size, 0, firstLine);
+
+            enableKeypad();
+            int selected = 0;
+
+            bool hasSelected = true;
+            while (1) {
+                int ch = getch();
+
+                if (ERR == ch) {
+                    continue;
+                }
+
+                if (ESC_KEY == ch) {
+                    hasSelected = false;
+                    break;
+                }
+
+                selected = handleSelectedChange(ch, selected, size);
+
+                if ('\n' == ch) {
+                    break;
+                };
+
+                printLogins(logins, size, selected, firstLine);
             }
 
-            selected = handleSelectedChange(ch, selected, size);
+            if (hasSelected) {
+                handleLoginSelect(logins[selected], selected);
+            }
 
-            if ('\n' == ch) {
-                break;
-            };
-
-            printLogins(logins, size, selected, firstLine);
+            disableKeypad();
         }
-
-        if (hasSelected) {
-            handleLoginSelect(logins[selected], selected);
-        }
-
-        disableKeypad();
     }
 
     logwinMain();

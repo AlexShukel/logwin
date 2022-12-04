@@ -1,7 +1,14 @@
+#include "aes.h"
 #include "curses.h"
 #include "main.h"
 #include "utils.h"
 #include <stdbool.h>
+#include <stdint.h>
+
+void encryptPassword(struct AES_ctx *aesContext, uint8_t *buffer) {
+    AES_init_ctx_iv(aesContext, loginData.key, loginData.iv);
+    AES_CBC_encrypt_buffer(aesContext, buffer, PASSWORD_LENGTH);
+}
 
 void addNewLogin() {
     Login loginCredentials;
@@ -18,12 +25,10 @@ void addNewLogin() {
 
     nullifyString(password, PASSWORD_LENGTH);
 
-    AES_init_ctx_iv(&loginCredentials.aesContext, loginData.key, loginData.iv);
-    AES_CBC_encrypt_buffer(&loginCredentials.aesContext, password,
-                           PASSWORD_LENGTH);
+    encryptPassword(&loginCredentials.aesContext, password);
 
     memcpy(loginCredentials.cipher, password, PASSWORD_LENGTH);
 
-    saveLoginCredentials(&loginCredentials);
+    saveLoginCredentials(&loginCredentials, -1);
     logwinMain();
 }

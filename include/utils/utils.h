@@ -9,6 +9,7 @@
 
 // Manipulations with screen
 void inputString(char *str, size_t size, bool noEcho);
+void modifyString(char *str, size_t size);
 
 void printColorText(int color, const char *format, ...);
 void va_printColorText(int color, const char *format, va_list argptr);
@@ -27,6 +28,7 @@ void disableKeypad();
 // General utils
 bool fileExists(char *fileName);
 void nullifyString(char *str, size_t capacity);
+int max(int a, int b);
 
 // Strong password module
 #define PASSWORD_STRENGTH_LENGTH 0b00000001

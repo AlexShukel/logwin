@@ -2,7 +2,7 @@
 #include "utils.h"
 #include <stdbool.h>
 
-static inline int max(int a, int b) { return a > b ? a : b; }
+int max(int a, int b) { return a > b ? a : b; }
 
 void inputString(char *str, size_t size, bool noEcho) {
     if (noEcho) {
