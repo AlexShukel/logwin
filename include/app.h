@@ -18,6 +18,8 @@ enum AuthUserAction { LOGIN, SIGN_UP };
 
 enum ErrorCode {
     IGNORE,
+    MANUAL_EXIT,
+    TERMINAL_DOES_NOT_SUPPORT_COLOR,
     SYSTEM_ERROR,
     NO_USERS_FOUND,
 };

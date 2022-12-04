@@ -1,6 +1,8 @@
 # Logwin
 
-Navigation:
+Password manager via CLI written in c. Free analog for [1Password](https://1password.com/).
+
+Contents:
 
 1. [How to build project](#project-build)
 

@@ -20,9 +20,7 @@ void initConsole() {
     initscr();
 
     if (has_colors() == FALSE) {
-        endwin();
-        fprintf(stderr, "Your terminal does not support color\n");
-        exit(1);
+        longjmp(exceptionJmpBuffer, TERMINAL_DOES_NOT_SUPPORT_COLOR);
     }
 
     start_color();
@@ -32,9 +30,6 @@ void initConsole() {
 }
 
 int main() {
-    initConsole();
-    printw("Welcome to logwin!\n");
-
     // Errors handling
     int exitCode = setjmp(exceptionJmpBuffer);
 
@@ -42,6 +37,16 @@ int main() {
         endwin();
 
         switch (exitCode) {
+        case MANUAL_EXIT: {
+            printf("App closed. Log out successfully!\n");
+            break;
+        }
+
+        case TERMINAL_DOES_NOT_SUPPORT_COLOR: {
+            fprintf(stderr, "Your terminal does not support color\n");
+            break;
+        }
+
         case SYSTEM_ERROR: {
             perror("");
             break;
@@ -61,6 +66,9 @@ int main() {
         return 0;
     }
 
+    initConsole();
+    printw("Welcome to logwin!\n");
+
     // List of options
     char loginOption[] = "Login";
     char singUpOption[] = "Sign up";
@@ -79,11 +87,10 @@ int main() {
                "account.\n");
         login();
     } else {
-        endwin();
-        return 0;
+        longjmp(exceptionJmpBuffer, MANUAL_EXIT);
     }
 
     logwinMain();
 
-    return 0;
+    longjmp(exceptionJmpBuffer, MANUAL_EXIT);
 }

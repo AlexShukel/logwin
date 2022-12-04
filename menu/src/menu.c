@@ -12,7 +12,7 @@ void printMenuOptions(char **menuOptions, size_t menuSize, int selectedItem,
         short textColor =
             selectedItem == i ? GREEN_TEXT_COLOR : DEFAULT_TEXT_COLOR;
 
-        mvprintColorText(firstLine + i, 0, textColor, "%s",
+        mvprintColorText(firstLine + i, 0, textColor, "%d: %s", i + 1,
                          i == menuSize ? "Exit" : menuOptions[i]);
     }
 

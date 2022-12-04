@@ -7,20 +7,27 @@ void logwinMain() {
     printw("Welcome to main logwin interface!\n");
 
     // Main interface options
-    char addNewLoginOption[] = "Add login credentials";
-    char listLoginCredentialsOption[] = "List all my login credentials";
+    char addNewLoginOption[] = "Add new login";
+    char listAllLoginsOption[] = "List all logins";
 
-    char *options[] = {addNewLoginOption, listLoginCredentialsOption};
+    char *options[] = {addNewLoginOption, listAllLoginsOption};
 
     int answer = showMenu("Choose one from the following actions:", options,
                           sizeof(options) / sizeof(char *), "");
 
-    if (answer == ADD_NEW) {
-        // Add login credentials
+    switch (answer) {
+    case ADD_NEW: {
         addNewLogin();
-    } else if (answer == LIST_ALL) {
-        // List all credentials
+        break;
+    }
+
+    case LIST_ALL: {
         listLogins();
+        break;
+    }
+
+    default:
+        break;
     }
 
     return;
