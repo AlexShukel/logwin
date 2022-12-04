@@ -10,6 +10,8 @@
 #define ERROR_TEXT_COLOR 1
 #define GREEN_TEXT_COLOR 2
 
+#define ESC_KEY 27
+
 #include "./aes/aes.h"
 #include "./sha256/sha256.h"
 #include <setjmp.h>

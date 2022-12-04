@@ -9,8 +9,9 @@ void logwinMain() {
     // Main interface options
     char addNewLoginOption[] = "Add new login";
     char listAllLoginsOption[] = "List all logins";
+    char exitOption[] = "Exit";
 
-    char *options[] = {addNewLoginOption, listAllLoginsOption};
+    char *options[] = {addNewLoginOption, listAllLoginsOption, exitOption};
 
     int answer = showMenu("Choose one from the following actions:", options,
                           sizeof(options) / sizeof(char *), "");

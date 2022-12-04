@@ -1,6 +1,6 @@
 include(gclados)
 
-add_executable(aesTests ${SRC_FILES} entry.c)
+add_executable(aesTests ${SRC_FILES} "${CMAKE_CURRENT_SOURCE_DIR}/entry.c")
 
 include_directories(aesTests "${PROJECT_SOURCE_DIR}/include/gclados")
 target_include_directories(aesTests PUBLIC "${PROJECT_SOURCE_DIR}/include/aes")

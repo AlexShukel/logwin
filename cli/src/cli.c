@@ -72,7 +72,8 @@ int main() {
     // List of options
     char loginOption[] = "Login";
     char singUpOption[] = "Sign up";
-    char *options[] = {loginOption, singUpOption};
+    char exitOption[] = "Exit";
+    char *options[] = {loginOption, singUpOption, exitOption};
 
     // Get answer from menu
     int answer = showMenu("Authentication options:", options,

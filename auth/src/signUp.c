@@ -41,12 +41,12 @@ void signUp() {
         longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
     }
 
-    uint64_t size = 0;
+    int size = 0;
 
     if (isFileExists) {
-        fread(&size, sizeof(uint64_t), 1, usersDB);
+        fread(&size, sizeof(int), 1, usersDB);
     } else {
-        fwrite(&size, sizeof(uint64_t), 1, usersDB);
+        fwrite(&size, sizeof(int), 1, usersDB);
     }
 
     User users[size];
@@ -60,14 +60,14 @@ void signUp() {
         inputString(newUsername, USERNAME_LENGTH, false);
 
         bool usernameExists = false;
-        for (uint64_t i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i) {
             if (strcmp(users[i].name, newUsername) == 0) {
                 usernameExists = true;
                 break;
             }
         }
 
-        fseek(usersDB, sizeof(uint64_t), SEEK_SET);
+        fseek(usersDB, sizeof(int), SEEK_SET);
 
         if (usernameExists) {
             mvprintErrorMessage(currentLine - 1, 0,
@@ -126,7 +126,7 @@ void signUp() {
     fwrite(&user, sizeof(User), 1, usersDB);
     rewind(usersDB);
     ++size;
-    fwrite(&size, sizeof(uint64_t), 1, usersDB);
+    fwrite(&size, sizeof(int), 1, usersDB);
 
     fclose(usersDB);
 

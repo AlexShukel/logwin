@@ -21,6 +21,9 @@ void mvprintErrorMessage(int y, int x, const char *format, ...);
 
 void clearLine(int y, int x);
 
+void enableKeypad();
+void disableKeypad();
+
 // General utils
 bool fileExists(char *fileName);
 void nullifyString(char *str, size_t capacity);

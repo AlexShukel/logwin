@@ -20,8 +20,8 @@ void login() {
         longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
     }
 
-    uint64_t size = 0;
-    fread(&size, sizeof(uint64_t), 1, usersDB);
+    int size = 0;
+    fread(&size, sizeof(int), 1, usersDB);
 
     int currentLine = stdscr->_cury + 1;
     while (!isValidLogin) {
@@ -32,7 +32,7 @@ void login() {
         mvprintw(currentLine + 2, 0, "Enter your password:\n");
         inputString(masterPassword, PASSWORD_LENGTH, true);
 
-        for (uint64_t i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i) {
             User user;
             fread(&user, sizeof(User), 1, usersDB);
 
@@ -46,7 +46,7 @@ void login() {
             }
         }
 
-        fseek(usersDB, sizeof(uint64_t), SEEK_SET);
+        fseek(usersDB, sizeof(int), SEEK_SET);
 
         if (!isValidLogin) {
             mvprintErrorMessage(

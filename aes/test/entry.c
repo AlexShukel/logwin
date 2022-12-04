@@ -8,7 +8,7 @@ int main() {
     GcladosTest gcladosTests0[] = {
         __gcladosTest_basic_usage("Should get encrypted plaintext from double transformation"),
     };
-    GcladosTestSuite gcladosTestSuite0 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/aes/test/aes.test.c", gcladosTests0, 1);
+    GcladosTestSuite gcladosTestSuite0 = gcladosCreateTestSuite("./aes.test.c", gcladosTests0, 1);
     GcladosTestSuite gcladosTestSuites[] = {
         gcladosTestSuite0,
     };

@@ -18,17 +18,17 @@ void saveLoginCredentials(const Login *credentials) {
         longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
     }
 
-    uint64_t size = 0;
+    int size = 0;
 
     if (isFileExists) {
-        fread(&size, sizeof(uint64_t), 1, userDataDB);
+        fread(&size, sizeof(int), 1, userDataDB);
     } else {
-        fwrite(&size, sizeof(uint64_t), 1, userDataDB);
+        fwrite(&size, sizeof(int), 1, userDataDB);
     }
 
     rewind(userDataDB);
     ++size;
-    fwrite(&size, sizeof(uint64_t), 1, userDataDB);
+    fwrite(&size, sizeof(int), 1, userDataDB);
     fseek(userDataDB, 0, SEEK_END);
     fwrite(credentials, sizeof(Login), 1, userDataDB);
 
