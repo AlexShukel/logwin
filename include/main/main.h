@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 typedef struct {
+    // TODO: Encrypt all data
     char url[URL_LENGTH];
     char username[USERNAME_LENGTH];
     char cipher[PASSWORD_LENGTH];
