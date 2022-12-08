@@ -19,5 +19,5 @@ target_link_libraries(main menu)
 target_include_directories(main PUBLIC "${PROJECT_SOURCE_DIR}/include/menu")
 
 # aes
-target_link_libraries(main aes)
+target_link_libraries(main tiny-aes)
 target_include_directories(main PUBLIC "${PROJECT_SOURCE_DIR}/include/aes")

@@ -14,7 +14,7 @@ int main() {
         __gcladosTest_handle_selected_change_3("Should increase (on KEY_DOWN) selected item"),
         __gcladosTest_handle_selected_change_4("Should decrease (ont KEY_UP) selected item"),
     };
-    GcladosTestSuite gcladosTestSuite0 = gcladosCreateTestSuite("./handleSelectedChange.test.c", gcladosTests0, 4);
+    GcladosTestSuite gcladosTestSuite0 = gcladosCreateTestSuite("/cygdrive/c/Git/logwin/internal/menu/test/handleSelectedChange.test.c", gcladosTests0, 4);
     GcladosTestSuite gcladosTestSuites[] = {
         gcladosTestSuite0,
     };

@@ -1,1 +1,1 @@
-cmake --build build && cd build/cli/src && .\logwin.exe
+cmake --build build && cd build/cli && .\logwin.exe

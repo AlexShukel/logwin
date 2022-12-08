@@ -13,7 +13,7 @@ Contents:
 -   [Cmake](https://cmake.org/download/) executable
 -   [Ninja](https://github.com/ninja-build/ninja/releases) executable
 
-Add paths to these executables in `PATH` environment variable. [how to add environment variable on windows](<https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)>)
+Add paths to these executables in `PATH` environment variable. [how to add environment variable on windows](<https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)#to-add-a-path-to-the-path-environment-variable>)
 
 ### Steps to build:
 
@@ -30,3 +30,9 @@ cmake --build build
 ```
 
 3. logwin.exe will appear in `build/cli/src` directory
+
+TODO:
+
+-   add possibility to double click on user.logwin file to open this program.
+-   use git submodules.
+-   pdcurses.dll might not work in other environments.
