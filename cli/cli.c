@@ -3,17 +3,22 @@
 #include "curses.h"
 #include "main.h"
 #include "menu.h"
-#include "sha256.h"
 #include <errno.h>
 #include <inttypes.h>
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Global variables
-LoginData loginData = {.iv = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-                              0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}};
+// TODO: generate random salt
+uint8_t salt[SALT_LEN] = {0};
+uint32_t t_cost = 2;
+uint32_t m_cost = (1 << 16);
+uint32_t parallelism = 1;
+
+LoginData loginData;
 jmp_buf exceptionJmpBuffer;
 
 void initConsole() {

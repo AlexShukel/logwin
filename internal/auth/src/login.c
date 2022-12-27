@@ -1,10 +1,13 @@
 #include "app.h"
+#include "argon2.h"
 #include "auth.h"
 #include "curses.h"
 #include "utils.h"
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 void login() {
     char masterPassword[PASSWORD_LENGTH];
@@ -23,6 +26,9 @@ void login() {
     int size = 0;
     fread(&size, sizeof(int), 1, usersDB);
 
+    User users[size];
+    fread(users, sizeof(User), size, usersDB);
+
     int currentLine = stdscr->_cury + 1;
     while (!isValidLogin) {
         mvprintw(currentLine, 0, "Enter your username:\n");
@@ -32,15 +38,15 @@ void login() {
         mvprintw(currentLine + 2, 0, "Enter your password:\n");
         inputString(masterPassword, PASSWORD_LENGTH, true);
 
+        nullifyString(masterPassword, PASSWORD_LENGTH);
+
+        uint8_t hash[HASH_LEN];
+        argon2i_hash_raw(t_cost, m_cost, parallelism, masterPassword,
+                         PASSWORD_LENGTH, salt, SALT_LEN, hash, HASH_LEN);
+
         for (int i = 0; i < size; ++i) {
-            User user;
-            fread(&user, sizeof(User), 1, usersDB);
-
-            uint8_t hash[SIZE_OF_SHA_256_HASH];
-            calc_sha_256(hash, masterPassword, strlen(masterPassword));
-
-            if (strcmp(user.name, loginData.name) == 0 &&
-                are_hashes_equal(user.hash, hash)) {
+            if (strcmp(users[i].name, loginData.name) == 0 &&
+                memcmp(users[i].hash, hash, HASH_LEN) == 0) {
                 isValidLogin = true;
                 break;
             }
@@ -48,14 +54,11 @@ void login() {
 
         fseek(usersDB, sizeof(int), SEEK_SET);
 
-        if (!isValidLogin) {
-            mvprintErrorMessage(
-                currentLine - 1, 0,
-                "Username or password is invalid. Please, try again.\n");
-        }
+        mvprintErrorMessage(
+            currentLine - 1, 0,
+            "Username or password is invalid. Please, try again.\n");
     }
 
-    nullifyString(masterPassword, PASSWORD_LENGTH);
     memcpy(loginData.key, masterPassword, PASSWORD_LENGTH);
 
     erase();

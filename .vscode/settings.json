@@ -44,6 +44,9 @@
 		"cstring": "c",
 		"auth.h": "c",
 		"aes.h": "c",
-		"cmath": "c"
+		"cmath": "c",
+		"*.tcc": "c",
+		"algorithm": "c",
+		"__string": "c"
 	}
 }

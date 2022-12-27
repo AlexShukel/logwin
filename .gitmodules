@@ -1,3 +1,6 @@
 [submodule "external/aes"]
 	path = external/aes
 	url = https://github.com/kokke/tiny-AES-c.git
+[submodule "external/phc-winner-argon2"]
+	path = external/phc-winner-argon2
+	url = https://github.com/P-H-C/phc-winner-argon2.git

@@ -1,11 +1,12 @@
 #include "app.h"
+#include "argon2.h"
 #include "auth.h"
 #include "curses.h"
-#include "sha256.h"
 #include "utils.h"
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 void erasePasswordStrengthCriteria(int firstLine) {
     for (int i = 0; i < NUMBER_OF_CRITERIA + 1; ++i) {
@@ -114,13 +115,15 @@ void signUp() {
     }
 
     // Write new user to db
-    uint8_t hash[SIZE_OF_SHA_256_HASH];
-    calc_sha_256(hash, newPassword, strlen(newPassword));
+    uint8_t hash[HASH_LEN];
+    nullifyString(newPassword, PASSWORD_LENGTH);
+    argon2i_hash_raw(t_cost, m_cost, parallelism, newPassword, PASSWORD_LENGTH,
+                     salt, SALT_LEN, hash, HASH_LEN);
 
     User user;
 
     memcpy(user.name, newUsername, USERNAME_LENGTH);
-    memcpy(user.hash, hash, SIZE_OF_SHA_256_HASH);
+    memcpy(user.hash, hash, HASH_LEN);
 
     fseek(usersDB, 0, SEEK_END);
     fwrite(&user, sizeof(User), 1, usersDB);
