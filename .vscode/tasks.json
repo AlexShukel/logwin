@@ -18,7 +18,7 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "build"
+                "cmake-build-debug"
             ],
             "problemMatcher": [],
             "group": {

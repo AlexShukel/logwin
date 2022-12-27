@@ -1,1 +1,1 @@
-cmake --build build && cd build/cli && .\logwin.exe
+cmake --build cmake-build-debug && cd cmake-build-debug/cli && .\logwin.exe
