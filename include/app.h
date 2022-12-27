@@ -1,6 +1,9 @@
 #ifndef APP_H
 #define APP_H
 
+#include "./aes/aes.h"
+#include <setjmp.h>
+
 #define USERNAME_LENGTH 32
 #define PASSWORD_LENGTH 32
 #define URL_LENGTH 128
@@ -12,9 +15,8 @@
 
 #define ESC_KEY 27
 
-#include "./aes/aes.h"
-#include "./sha256/sha256.h"
-#include <setjmp.h>
+#define HASH_LEN 32
+#define SALT_LEN 16
 
 enum AuthUserAction { LOGIN, SIGN_UP };
 
@@ -28,7 +30,7 @@ enum ErrorCode {
 
 typedef struct {
     char name[USERNAME_LENGTH];
-    uint8_t hash[SIZE_OF_SHA_256_HASH];
+    uint8_t hash[HASH_LEN];
 } User;
 
 typedef struct {
@@ -36,6 +38,12 @@ typedef struct {
     uint8_t key[PASSWORD_LENGTH];
     uint8_t iv[AES_BLOCKLEN];
 } LoginData;
+
+// Variables for argon2 algorithm
+extern uint8_t salt[SALT_LEN];
+extern uint32_t t_cost;
+extern uint32_t m_cost;
+extern uint32_t parallelism;
 
 extern LoginData loginData;
 extern jmp_buf exceptionJmpBuffer;

@@ -14,6 +14,8 @@ target_link_libraries(auth pdcurses)
 target_link_libraries(auth utils)
 target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/utils")
 
-# sha256
-target_link_libraries(auth sha256)
-target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/sha256")
+include(argon2)
+
+# argon2
+target_link_libraries(auth argon2)
+target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/argon2")

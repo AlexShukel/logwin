@@ -4,6 +4,7 @@
 #include "utils.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 void encryptPassword(struct AES_ctx *aesContext, uint8_t *buffer) {
     AES_init_ctx_iv(aesContext, loginData.key, loginData.iv);
