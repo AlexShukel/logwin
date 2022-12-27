@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(Logwin VERSION 1.0)
+enable_language(C)
 
 # TODO: configure builds for debug and release
 set(CMAKE_BUILD_TYPE Debug)
