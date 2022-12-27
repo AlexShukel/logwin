@@ -1,3 +1,6 @@
+// THIS FILE HAS BEEN TAKEN FROM https://github.com/amosnier/sha-2
+// TODO: make git submodule
+
 #include "sha256.h"
 
 #define TOTAL_LEN_LEN 8
