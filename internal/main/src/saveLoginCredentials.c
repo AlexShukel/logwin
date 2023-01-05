@@ -22,7 +22,7 @@ void encryptLogin(struct AES_ctx *ctx, Login *login) {
 
 // Passing negative index value, credentials will be appended to bottom of file.
 void saveLoginCredentials(Login *credentials, int index) {
-    char filename[USERNAME_LENGTH + 4];
+    char filename[USERNAME_LENGTH + USER_DATA_FILENAME_EXTENSION_LEN];
     getUserDataFilename(filename);
 
     bool isFileExists = fileExists(filename);

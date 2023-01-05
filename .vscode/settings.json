@@ -47,6 +47,7 @@
 		"cmath": "c",
 		"*.tcc": "c",
 		"algorithm": "c",
-		"__string": "c"
+		"__string": "c",
+		"errno.h": "c"
 	}
 }

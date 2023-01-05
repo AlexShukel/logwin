@@ -3,6 +3,7 @@
 #include "curses.h"
 #include "main.h"
 #include "menu.h"
+#include "utils.h"
 #include <errno.h>
 #include <inttypes.h>
 #include <setjmp.h>
@@ -11,7 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
 
 // Global variables
 uint32_t t_cost = 2;
@@ -34,7 +34,7 @@ void initConsole() {
     init_pair(GREEN_TEXT_COLOR, COLOR_GREEN, COLOR_BLACK);
 }
 
-int main() {
+int main(int argc, char **argv) {
     // Errors handling
     int exitCode = setjmp(exceptionJmpBuffer);
 
@@ -64,6 +64,11 @@ int main() {
             break;
         }
 
+        case USER_NOT_FOUND: {
+            fprintf(stderr, "User specified in file name was not found.");
+            break;
+        }
+
         default:
             break;
         }
@@ -71,34 +76,41 @@ int main() {
         return 0;
     }
 
+    // Initialization
     initConsole();
-    printw("Welcome to logwin!\n");
-
     srand(time(NULL));
 
-    // List of options
-    char loginOption[] = "Login";
-    char singUpOption[] = "Sign up";
-    char exitOption[] = "Exit";
-    char *options[] = {loginOption, singUpOption, exitOption};
-
-    // Get answer from menu
-    int answer = showMenu("Authentication options:", options,
-                          sizeof(options) / sizeof(char *),
-                          "Login to existing account or create a new one.");
-
-    if (answer == LOGIN) {
-        login();
-    } else if (answer == SIGN_UP) {
-        signUp();
-        printw("Signed up successfully!\nNow you can login to your "
-               "account.\n");
-        login();
+    // Auth
+    if (argc >= 2) {
+        loginWithFilePath(argv[1]);
     } else {
-        longjmp(exceptionJmpBuffer, MANUAL_EXIT);
+        printw("Welcome to logwin!\n");
+
+        // List of options
+        char loginOption[] = "Login";
+        char singUpOption[] = "Sign up";
+        char exitOption[] = "Exit";
+        char *options[] = {loginOption, singUpOption, exitOption};
+
+        // Get answer from menu
+        int answer = showMenu("Authentication options:", options,
+                              sizeof(options) / sizeof(char *),
+                              "Login to existing account or create a new one.");
+
+        if (answer == LOGIN) {
+            login();
+        } else if (answer == SIGN_UP) {
+            signUp();
+            printw("Signed up successfully!\nNow you can login to your "
+                   "account.\n");
+            login();
+        } else {
+            longjmp(exceptionJmpBuffer, MANUAL_EXIT);
+        }
     }
 
+    // Main
     logwinMain();
 
-    longjmp(exceptionJmpBuffer, MANUAL_EXIT);
+    return 0;
 }

@@ -9,5 +9,5 @@ void getUserDataFilename(char *filename) {
         ++i;
     }
 
-    memcpy(filename + i, ".bin\0", 5);
+    memcpy(filename + i, ".logwin\0", USER_DATA_FILENAME_EXTENSION_LEN);
 }
