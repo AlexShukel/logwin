@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
-add_compile_options(-fno-stack-check -fno-stack-protector -mno-stack-arg-probe)
-add_link_options(-z muldefs -lgcc)
-
 project(Logwin VERSION 1.0 LANGUAGES C)
 
 set(CMAKE_BUILD_TYPE Debug)
