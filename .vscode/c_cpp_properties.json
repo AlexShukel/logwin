@@ -7,7 +7,8 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "includePath": [
-                "${workspaceFolder}/include/**"
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/include/utils"
             ]
         }
     ],

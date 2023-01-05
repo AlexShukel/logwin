@@ -6,4 +6,6 @@
 void login();
 void signUp();
 
+void loginWithFilePath(const char *filePath);
+
 #endif

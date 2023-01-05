@@ -10,7 +10,7 @@
 enum ActionWithLogin { DELETE, MODIFY, COPY, GO_BACK };
 
 void deleteLogin(int index) {
-    char filename[USERNAME_LENGTH + 4];
+    char filename[USERNAME_LENGTH + USER_DATA_FILENAME_EXTENSION_LEN];
     getUserDataFilename(filename);
 
     FILE *userDataDB = fopen(filename, "r+b");

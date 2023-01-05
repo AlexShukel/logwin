@@ -59,7 +59,7 @@ void noLoginsSaved() {
 
 void listLogins() {
     erase();
-    char filename[USERNAME_LENGTH + 4];
+    char filename[USERNAME_LENGTH + USER_DATA_FILENAME_EXTENSION_LEN];
     getUserDataFilename(filename);
 
     FILE *userDataDB = fopen(filename, "rb");
