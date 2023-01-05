@@ -14,6 +14,7 @@
 #define GREEN_TEXT_COLOR 2
 
 #define ESC_KEY 27
+#define SPACE_KEY 32
 
 #define HASH_LEN 32
 #define SALT_LEN 16

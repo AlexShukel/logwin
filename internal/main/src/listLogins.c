@@ -14,18 +14,21 @@ void decryptLogin(struct AES_ctx *ctx, Login *credentials) {
     AES_CBC_decrypt_buffer(ctx, (uint8_t *)credentials, sizeof(Login));
 }
 
-void printLogin(Login login, int firstLine) {
+void printLogin(Login login, int firstLine, bool visible) {
     mvprintw(firstLine + 0, 0, "Url: %s\n", login.url);
-    mvprintw(firstLine + 1, 0, "Username: %s\n", login.username);
-    mvprintw(firstLine + 2, 0, "Password: %s\n", login.password);
+    mvprintw(firstLine + 1, 0, "Username: %s\n",
+             visible ? login.username : "...");
+    mvprintw(firstLine + 2, 0, "Password: %s\n",
+             visible ? login.password : "...");
 }
 
-void printLogins(const Login *logins, int size, int selected, int firstLine) {
+void printLogins(const Login *logins, int size, int selected, int firstLine,
+                 bool *visible) {
     for (int i = 0; i < size; ++i) {
         if (selected == i) {
             attron(COLOR_PAIR(GREEN_TEXT_COLOR));
         }
-        printLogin(logins[i], firstLine + i * 4);
+        printLogin(logins[i], firstLine + i * 4, visible[i]);
         if (selected == i) {
             attroff(COLOR_PAIR(GREEN_TEXT_COLOR));
         }
@@ -87,18 +90,26 @@ void listLogins() {
 
             fclose(userDataDB);
 
-            printw("Use arrow keys and press enter to select a login. Press "
-                   "ESC to "
-                   "go back.\n");
+            printw("- Use arrow keys to select a login.\n");
+            printw("- Press enter to modify login.\n");
+            printw("- Press space to make login data visible.\n");
+            printw("- Press 'v' to make all logins visible.\n");
+            printw("- Press ESC to go back.\n\n");
             printColorText(GREEN_TEXT_COLOR, "In total %d entries:\n", size);
 
-            int firstLine = stdscr->_cury;
-            printLogins(logins, size, 0, firstLine);
-
             enableKeypad();
-            int selected = 0;
 
+            int firstLine = stdscr->_cury;
+            int selected = 0;
             bool hasSelected = true;
+            bool areAllVisible = false;
+            bool visible[size];
+            for (int i = 0; i < size; ++i) {
+                visible[i] = false;
+            }
+
+            printLogins(logins, size, 0, firstLine, visible);
+
             while (1) {
                 int ch = getch();
 
@@ -111,13 +122,24 @@ void listLogins() {
                     break;
                 }
 
+                if (SPACE_KEY == ch) {
+                    visible[selected] = visible[selected] ? false : true;
+                }
+
+                if ('v' == ch) {
+                    areAllVisible = areAllVisible ? false : true;
+                    for (int i = 0; i < size; ++i) {
+                        visible[i] = areAllVisible;
+                    }
+                }
+
                 selected = handleSelectedChange(ch, selected, size);
 
                 if ('\n' == ch) {
                     break;
                 };
 
-                printLogins(logins, size, selected, firstLine);
+                printLogins(logins, size, selected, firstLine, visible);
             }
 
             if (hasSelected) {
