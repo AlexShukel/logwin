@@ -32,10 +32,14 @@ void printPasswordStrengthCriteria(int firstLine, uint8_t bitFlag) {
 }
 
 void generateSalt(uint8_t salt[SALT_LEN]) {
-    srand(time(NULL));
-
     for (int i = 0; i < SALT_LEN; ++i) {
         salt[i] = rand() % 255;
+    }
+}
+
+void generateIv(uint8_t iv[AES_BLOCKLEN]) {
+    for (int i = 0; i < AES_BLOCKLEN; ++i) {
+        iv[i] = rand() % 255;
     }
 }
 
@@ -126,6 +130,7 @@ void signUp() {
 
     User user;
     generateSalt(user.salt);
+    generateIv(user.iv);
 
     // Write new user to db
     uint8_t hash[HASH_LEN];

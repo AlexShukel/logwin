@@ -9,16 +9,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
-void decryptPassword(Login *credentials) {
-    AES_init_ctx_iv(&credentials->aesContext, loginData.key, loginData.iv);
-    AES_CBC_decrypt_buffer(&credentials->aesContext, credentials->cipher,
-                           PASSWORD_LENGTH);
+void decryptLogin(struct AES_ctx *ctx, Login *credentials) {
+    AES_init_ctx_iv(ctx, loginData.key, loginData.iv);
+    AES_CBC_decrypt_buffer(ctx, (uint8_t *)credentials, sizeof(Login));
 }
 
 void printLogin(Login login, int firstLine) {
     mvprintw(firstLine + 0, 0, "Url: %s\n", login.url);
     mvprintw(firstLine + 1, 0, "Username: %s\n", login.username);
-    mvprintw(firstLine + 2, 0, "Password: %s\n", login.cipher);
+    mvprintw(firstLine + 2, 0, "Password: %s\n", login.password);
 }
 
 void printLogins(const Login *logins, int size, int selected, int firstLine) {
@@ -76,11 +75,14 @@ void listLogins() {
             noLoginsSaved();
 
         } else {
+            struct AES_ctx ctx;
+            fread(&ctx, sizeof(struct AES_ctx), 1, userDataDB);
+
             Login logins[size];
             fread(logins, sizeof(Login), size, userDataDB);
 
             for (int i = 0; i < size; ++i) {
-                decryptPassword(&logins[i]);
+                decryptLogin(&ctx, logins + i);
             }
 
             fclose(userDataDB);

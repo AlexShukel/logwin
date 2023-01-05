@@ -1,3 +1,4 @@
+#include "aes.h"
 #include "app.h"
 #include "main.h"
 #include "utils.h"
@@ -14,7 +15,13 @@ int getFileOffset(int index, int size) {
     return index;
 }
 
-void saveLoginCredentials(const Login *credentials, int index) {
+void encryptLogin(struct AES_ctx *ctx, Login *login) {
+    AES_init_ctx_iv(ctx, loginData.key, loginData.iv);
+    AES_CBC_encrypt_buffer(ctx, (uint8_t *)login, sizeof(Login));
+}
+
+// Passing negative index value, credentials will be appended to bottom of file.
+void saveLoginCredentials(Login *credentials, int index) {
     char filename[USERNAME_LENGTH + 4];
     getUserDataFilename(filename);
 
@@ -40,8 +47,17 @@ void saveLoginCredentials(const Login *credentials, int index) {
         fwrite(&size, sizeof(int), 1, userDataDB);
     }
 
-    fseek(userDataDB, sizeof(int) + getFileOffset(index, size) * sizeof(Login),
+    struct AES_ctx ctx;
+    fread(&ctx, sizeof(struct AES_ctx), 1, userDataDB);
+
+    encryptLogin(&ctx, credentials);
+
+    int metaDataOffset = sizeof(int) + sizeof(struct AES_ctx);
+
+    fseek(userDataDB,
+          metaDataOffset + getFileOffset(index, size) * sizeof(Login),
           SEEK_SET);
+
     fwrite(credentials, sizeof(Login), 1, userDataDB);
 
     fclose(userDataDB);
