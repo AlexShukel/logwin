@@ -22,12 +22,15 @@ void deleteLogin(int index) {
     int size;
     fread(&size, sizeof(int), 1, userDataDB);
 
-    fseek(userDataDB, (index + 1) * sizeof(Login), SEEK_CUR);
+    fseek(userDataDB, sizeof(struct AES_ctx) + (index + 1) * sizeof(Login),
+          SEEK_CUR);
     int restLoginsSize = size - index - 1;
     Login restLogins[restLoginsSize];
     fread(restLogins, sizeof(Login), restLoginsSize, userDataDB);
 
-    fseek(userDataDB, sizeof(int) + index * sizeof(Login), SEEK_SET);
+    fseek(userDataDB,
+          sizeof(int) + sizeof(struct AES_ctx) + index * sizeof(Login),
+          SEEK_SET);
     fwrite(restLogins, sizeof(Login), restLoginsSize, userDataDB);
 
     rewind(userDataDB);
@@ -47,9 +50,7 @@ void modifyLogin(Login login, int index) {
     modifyString(login.username, USERNAME_LENGTH);
 
     printw("Modify password:\n");
-    modifyString(login.cipher, PASSWORD_LENGTH);
-
-    encryptPassword(&login.aesContext, login.cipher);
+    modifyString(login.password, PASSWORD_LENGTH);
 
     saveLoginCredentials(&login, index);
 }
@@ -83,7 +84,7 @@ void handleLoginSelect(Login login, int index) {
     }
 
     case COPY: {
-        PDC_setclipboard(login.cipher, strlen(login.cipher));
+        PDC_setclipboard(login.password, strlen(login.password));
         break;
     }
 

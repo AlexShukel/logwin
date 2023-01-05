@@ -12,6 +12,7 @@
 void login() {
     char masterPassword[PASSWORD_LENGTH];
     bool isValidLogin = false;
+    int userIndex = -1;
 
     if (!fileExists(USERS_DB)) {
         longjmp(exceptionJmpBuffer, NO_USERS_FOUND);
@@ -49,6 +50,7 @@ void login() {
 
                 if (memcmp(users[i].hash, hash, HASH_LEN) == 0) {
                     isValidLogin = true;
+                    userIndex = i;
                     break;
                 }
             }
@@ -62,6 +64,7 @@ void login() {
     }
 
     memcpy(loginData.key, masterPassword, PASSWORD_LENGTH);
+    memcpy(loginData.iv, users[userIndex].iv, AES_BLOCKLEN);
 
     erase();
     fclose(usersDB);

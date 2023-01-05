@@ -6,16 +6,14 @@
 #include <stdint.h>
 
 typedef struct {
-    // TODO: Encrypt all data
     char url[URL_LENGTH];
     char username[USERNAME_LENGTH];
-    char cipher[PASSWORD_LENGTH];
-    struct AES_ctx aesContext;
+    char password[PASSWORD_LENGTH];
 } Login;
 
 void logwinMain();
 
-void saveLoginCredentials(const Login *credentials, int index);
+void saveLoginCredentials(Login *credentials, int index);
 void addNewLogin();
 
 void listLogins();

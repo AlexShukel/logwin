@@ -32,6 +32,7 @@ typedef struct {
     char name[USERNAME_LENGTH];
     uint8_t hash[HASH_LEN];
     uint8_t salt[SALT_LEN];
+    uint8_t iv[AES_BLOCKLEN];
 } User;
 
 typedef struct {

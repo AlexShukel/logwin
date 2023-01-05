@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
 
 // Global variables
 uint32_t t_cost = 2;
@@ -71,6 +73,8 @@ int main() {
 
     initConsole();
     printw("Welcome to logwin!\n");
+
+    srand(time(NULL));
 
     // List of options
     char loginOption[] = "Login";
