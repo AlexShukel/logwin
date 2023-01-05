@@ -74,6 +74,8 @@ void signUp() {
         clearLine(currentLine + 1, 0);
         inputString(newUsername, USERNAME_LENGTH, false);
 
+        bool containsSlashes = includesSlashes(newUsername);
+
         bool usernameExists = false;
         for (int i = 0; i < size; ++i) {
             if (strcmp(users[i].name, newUsername) == 0) {
@@ -87,6 +89,9 @@ void signUp() {
         if (usernameExists) {
             mvprintErrorMessage(currentLine - 1, 0,
                                 "This username already exists!");
+        } else if (containsSlashes) {
+            mvprintErrorMessage(currentLine - 1, 0,
+                                "Username can not contain slashes!");
         } else {
             isValidUsername = true;
         }

@@ -28,6 +28,7 @@ void disableKeypad();
 // General utils
 bool fileExists(char *fileName);
 void nullifyString(char *str, size_t capacity);
+bool includesSlashes(const char *str);
 int max(int a, int b);
 
 // Strong password module
