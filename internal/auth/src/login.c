@@ -40,15 +40,17 @@ void login() {
 
         nullifyString(masterPassword, PASSWORD_LENGTH);
 
-        uint8_t hash[HASH_LEN];
-        argon2i_hash_raw(t_cost, m_cost, parallelism, masterPassword,
-                         PASSWORD_LENGTH, salt, SALT_LEN, hash, HASH_LEN);
-
         for (int i = 0; i < size; ++i) {
-            if (strcmp(users[i].name, loginData.name) == 0 &&
-                memcmp(users[i].hash, hash, HASH_LEN) == 0) {
-                isValidLogin = true;
-                break;
+            if (strcmp(users[i].name, loginData.name) == 0) {
+                uint8_t hash[HASH_LEN];
+                argon2i_hash_raw(t_cost, m_cost, parallelism, masterPassword,
+                                 PASSWORD_LENGTH, users[i].salt, SALT_LEN, hash,
+                                 HASH_LEN);
+
+                if (memcmp(users[i].hash, hash, HASH_LEN) == 0) {
+                    isValidLogin = true;
+                    break;
+                }
             }
         }
 

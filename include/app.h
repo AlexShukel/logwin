@@ -31,6 +31,7 @@ enum ErrorCode {
 typedef struct {
     char name[USERNAME_LENGTH];
     uint8_t hash[HASH_LEN];
+    uint8_t salt[SALT_LEN];
 } User;
 
 typedef struct {
@@ -40,7 +41,6 @@ typedef struct {
 } LoginData;
 
 // Variables for argon2 algorithm
-extern uint8_t salt[SALT_LEN];
 extern uint32_t t_cost;
 extern uint32_t m_cost;
 extern uint32_t parallelism;

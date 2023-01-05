@@ -12,8 +12,6 @@
 #include <string.h>
 
 // Global variables
-// TODO: generate random salt
-uint8_t salt[SALT_LEN] = {0};
 uint32_t t_cost = 2;
 uint32_t m_cost = (1 << 16);
 uint32_t parallelism = 1;
