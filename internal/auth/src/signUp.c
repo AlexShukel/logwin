@@ -6,7 +6,9 @@
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 void erasePasswordStrengthCriteria(int firstLine) {
     for (int i = 0; i < NUMBER_OF_CRITERIA + 1; ++i) {
@@ -26,6 +28,14 @@ void printPasswordStrengthCriteria(int firstLine, uint8_t bitFlag) {
     for (int i = 0; i < NUMBER_OF_CRITERIA; ++i) {
         printPasswordStrengthCriterion(firstLine + i + 1, bitFlag,
                                        passwordStrengthCriteria[i]);
+    }
+}
+
+void generateSalt(uint8_t salt[SALT_LEN]) {
+    srand(time(NULL));
+
+    for (int i = 0; i < SALT_LEN; ++i) {
+        salt[i] = rand() % 255;
     }
 }
 
@@ -114,13 +124,14 @@ void signUp() {
         }
     }
 
+    User user;
+    generateSalt(user.salt);
+
     // Write new user to db
     uint8_t hash[HASH_LEN];
     nullifyString(newPassword, PASSWORD_LENGTH);
     argon2i_hash_raw(t_cost, m_cost, parallelism, newPassword, PASSWORD_LENGTH,
-                     salt, SALT_LEN, hash, HASH_LEN);
-
-    User user;
+                     user.salt, SALT_LEN, hash, HASH_LEN);
 
     memcpy(user.name, newUsername, USERNAME_LENGTH);
     memcpy(user.hash, hash, HASH_LEN);
