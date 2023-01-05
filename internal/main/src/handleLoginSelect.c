@@ -58,7 +58,7 @@ void modifyLogin(Login login, int index) {
 void handleLoginSelect(Login login, int index) {
     erase();
 
-    printLogin(login, stdscr->_cury);
+    printLogin(login, stdscr->_cury, true);
     ++stdscr->_cury;
 
     char deleteOption[] = "Delete login";

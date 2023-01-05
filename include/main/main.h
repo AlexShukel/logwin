@@ -3,7 +3,9 @@
 
 #include "../aes/aes.h"
 #include "../app.h"
+#include <stdbool.h>
 #include <stdint.h>
+
 
 typedef struct {
     char url[URL_LENGTH];
@@ -17,7 +19,7 @@ void saveLoginCredentials(Login *credentials, int index);
 void addNewLogin();
 
 void listLogins();
-void printLogin(Login login, int firstLine);
+void printLogin(Login login, int firstLine, bool visible);
 void handleLoginSelect(Login login, int index);
 
 // utils
