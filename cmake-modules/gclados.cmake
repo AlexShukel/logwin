@@ -6,8 +6,3 @@ add_custom_command(
     DEPENDS ${SRC_FILES}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
-
-# TODO: check if it is possible to move this configuration in root CMakeLists.txt
-# Add gclados library
-add_library(gclados STATIC IMPORTED)
-set_target_properties(gclados PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/libgclados.a)

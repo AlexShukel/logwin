@@ -6,8 +6,6 @@ target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/auth")
 target_include_directories(auth PUBLIC "${PROJECT_SOURCE_DIR}/include/pdcurses")
 
-include(pdcurses)
-
 target_link_libraries(auth pdcurses)
 
 # utils
