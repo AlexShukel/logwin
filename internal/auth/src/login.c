@@ -2,6 +2,7 @@
 #include "argon2.h"
 #include "auth.h"
 #include "curses.h"
+#include "usersDB.h"
 #include "utils.h"
 #include <setjmp.h>
 #include <stdbool.h>
@@ -18,17 +19,12 @@ void login() {
         longjmp(exceptionJmpBuffer, NO_USERS_FOUND);
     }
 
-    FILE *usersDB = fopen(USERS_DB, "rb");
+    int size;
+    User *users = NULL;
 
-    if (usersDB == NULL) {
+    if (readAllUsers(&users, &size)) {
         longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
     }
-
-    int size = 0;
-    fread(&size, sizeof(int), 1, usersDB);
-
-    User users[size];
-    fread(users, sizeof(User), size, usersDB);
 
     int currentLine = stdscr->_cury + 1;
     while (!isValidLogin) {
@@ -56,8 +52,6 @@ void login() {
             }
         }
 
-        fseek(usersDB, sizeof(int), SEEK_SET);
-
         mvprintErrorMessage(
             currentLine - 1, 0,
             "Username or password is invalid. Please, try again.\n");
@@ -67,5 +61,5 @@ void login() {
     memcpy(loginData.iv, users[userIndex].iv, AES_BLOCKLEN);
 
     erase();
-    fclose(usersDB);
+    free(users);
 }

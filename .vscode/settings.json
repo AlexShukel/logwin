@@ -48,6 +48,12 @@
 		"*.tcc": "c",
 		"algorithm": "c",
 		"__string": "c",
-		"errno.h": "c"
+		"errno.h": "c",
+		"usersdb.h": "c",
+		"app.h": "c",
+		"stddef.h": "c",
+		"memory": "c",
+		"features.h": "c",
+		"reent.h": "c"
 	}
 }

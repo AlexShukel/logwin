@@ -1,6 +1,8 @@
 #include "app.h"
 #include "argon2.h"
+#include "auth.h"
 #include "curses.h"
+#include "usersDB.h"
 #include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -24,28 +26,23 @@ void getUsernameFromFilePath(const char *filePath, char *username) {
 }
 
 bool userExists(const char *username, User *foundUser) {
-    FILE *usersDB = fopen(USERS_DB, "rb");
+    int size;
+    User *users = NULL;
 
-    if (usersDB == NULL) {
+    if (readAllUsers(&users, &size)) {
         longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
     }
 
-    int size;
-    fread(&size, sizeof(int), 1, usersDB);
-
-    User user;
     bool userFound = false;
     for (int i = 0; i < size; ++i) {
-        fread(&user, sizeof(User), 1, usersDB);
-
-        if (strcmp(user.name, username) == 0) {
+        if (strcmp(users[i].name, username) == 0) {
             userFound = true;
-            memcpy(foundUser, &user, sizeof(User));
+            memcpy(foundUser, users + i, sizeof(User));
             break;
         }
     }
 
-    fclose(usersDB);
+    free(users);
     return userFound;
 }
 
