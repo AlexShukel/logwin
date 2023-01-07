@@ -9,7 +9,6 @@
 #define URL_LENGTH 128
 #define HASH_LEN 32
 #define SALT_LEN 16
-#define USERS_DB "usersDB.bin"
 #define USER_DATA_FILENAME_EXTENSION_LEN 8
 
 // curses text colors
@@ -31,13 +30,6 @@ enum ErrorCode {
     NO_USERS_FOUND,
     USER_NOT_FOUND
 };
-
-typedef struct {
-    char name[USERNAME_LENGTH];
-    uint8_t hash[HASH_LEN];
-    uint8_t salt[SALT_LEN];
-    uint8_t iv[AES_BLOCKLEN];
-} User;
 
 typedef struct {
     char name[USERNAME_LENGTH];

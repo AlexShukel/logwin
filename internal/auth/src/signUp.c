@@ -1,7 +1,9 @@
 #include "app.h"
 #include "argon2.h"
 #include "auth.h"
+#include "authUtils.h"
 #include "curses.h"
+#include "usersDB.h"
 #include "utils.h"
 #include <setjmp.h>
 #include <stdbool.h>
@@ -31,42 +33,17 @@ void printPasswordStrengthCriteria(int firstLine, uint8_t bitFlag) {
     }
 }
 
-void generateSalt(uint8_t salt[SALT_LEN]) {
-    for (int i = 0; i < SALT_LEN; ++i) {
-        salt[i] = rand() % 255;
-    }
-}
-
-void generateIv(uint8_t iv[AES_BLOCKLEN]) {
-    for (int i = 0; i < AES_BLOCKLEN; ++i) {
-        iv[i] = rand() % 255;
-    }
-}
-
 void signUp() {
     char newUsername[USERNAME_LENGTH];
     bool isValidUsername = false;
     int currentLine = stdscr->_cury + 1;
 
-    bool isFileExists = fileExists(USERS_DB);
+    User *users = NULL;
+    int size;
 
-    FILE *usersDB = fopen(USERS_DB, isFileExists ? "r+b" : "wb");
-
-    if (usersDB == NULL) {
+    if (readOrInitUsersDB(&users, &size)) {
         longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
-    }
-
-    int size = 0;
-
-    if (isFileExists) {
-        fread(&size, sizeof(int), 1, usersDB);
-    } else {
-        fwrite(&size, sizeof(int), 1, usersDB);
-    }
-
-    User users[size];
-
-    fread(users, sizeof(User), size, usersDB);
+    };
 
     // Input username
     while (!isValidUsername) {
@@ -84,8 +61,6 @@ void signUp() {
             }
         }
 
-        fseek(usersDB, sizeof(int), SEEK_SET);
-
         if (usernameExists) {
             mvprintErrorMessage(currentLine - 1, 0,
                                 "This username already exists!");
@@ -94,6 +69,8 @@ void signUp() {
                                 "Username can not contain slashes!");
         } else {
             isValidUsername = true;
+            clearLine(currentLine - 1, 0);
+            stdscr->_cury += 2;
         }
     }
 
@@ -137,7 +114,6 @@ void signUp() {
     generateSalt(user.salt);
     generateIv(user.iv);
 
-    // Write new user to db
     uint8_t hash[HASH_LEN];
     nullifyString(newPassword, PASSWORD_LENGTH);
     argon2i_hash_raw(t_cost, m_cost, parallelism, newPassword, PASSWORD_LENGTH,
@@ -146,13 +122,10 @@ void signUp() {
     memcpy(user.name, newUsername, USERNAME_LENGTH);
     memcpy(user.hash, hash, HASH_LEN);
 
-    fseek(usersDB, 0, SEEK_END);
-    fwrite(&user, sizeof(User), 1, usersDB);
-    rewind(usersDB);
-    ++size;
-    fwrite(&size, sizeof(int), 1, usersDB);
+    if (saveNewUser(&user)) {
+        longjmp(exceptionJmpBuffer, SYSTEM_ERROR);
+    }
 
-    fclose(usersDB);
-
+    free(users);
     erase();
 }
