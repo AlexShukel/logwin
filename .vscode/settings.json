@@ -55,6 +55,11 @@
 		"memory": "c",
 		"features.h": "c",
 		"reent.h": "c",
-		"ctime": "c"
+		"ctime": "c",
+		"compare": "c",
+		"concepts": "c",
+		"typeinfo": "c",
+		"__locale": "c",
+		"version": "c"
 	}
 }
