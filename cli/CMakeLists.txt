@@ -1,4 +1,6 @@
-add_executable(logwin cli.c)
+file(GLOB SRC_FILES *.c)
+
+add_executable(logwin ${SRC_FILES})
 
 target_include_directories(logwin PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
