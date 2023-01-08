@@ -6,7 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-
 typedef struct {
     char url[URL_LENGTH];
     char username[USERNAME_LENGTH];

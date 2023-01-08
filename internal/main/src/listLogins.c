@@ -1,5 +1,6 @@
 #include "app.h"
 #include "curses.h"
+#include "filterLogins.h"
 #include "main.h"
 #include "menu.h"
 #include "utils.h"
@@ -8,6 +9,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+
+#define MAX_FILTER_SIZE 100
 
 void decryptLogin(struct AES_ctx *ctx, Login *credentials) {
     AES_init_ctx_iv(ctx, loginData.key, loginData.iv);
@@ -57,6 +61,49 @@ void noLoginsSaved() {
     echo();
 }
 
+void printUsageInstructions() {
+    printw("- Use arrow keys to select a login.\n");
+    printw("- Press enter to modify login.\n");
+    printw("- Press space to make login data visible.\n");
+    printw("- Press 'v' to make all logins visible.\n");
+    printw("- Press 'f' to filter logins.\n");
+    printw("- Press 'd' to discard filter.\n");
+    printw("- Press ESC to go back.\n\n");
+}
+
+void printScreenHeader(int *findLoginLine, int size) {
+    printUsageInstructions();
+
+    printw("\n");
+    *findLoginLine = stdscr->_cury;
+    printw("\n");
+
+    printColorText(GREEN_TEXT_COLOR, "In total %d entries:\n", size);
+}
+
+void refreshFilteredLogins(FilteredLogins *filteredLogins, Login *initialLogins,
+                           int size, char *filter, int *findLoginLine,
+                           int *selected) {
+    free((*filteredLogins).logins);
+    *filteredLogins = filterLogins(initialLogins, size, filter);
+    erase();
+    printScreenHeader(findLoginLine, (*filteredLogins).size);
+    *selected = 0;
+}
+
+void readLogins(FILE *userDataDB, Login *logins, int size) {
+    struct AES_ctx ctx;
+    fread(&ctx, sizeof(struct AES_ctx), 1, userDataDB);
+
+    fread(logins, sizeof(Login), size, userDataDB);
+
+    for (int i = 0; i < size; ++i) {
+        decryptLogin(&ctx, logins + i);
+    }
+
+    fclose(userDataDB);
+}
+
 void listLogins() {
     erase();
     char filename[USERNAME_LENGTH + USER_DATA_FILENAME_EXTENSION_LEN];
@@ -76,39 +123,31 @@ void listLogins() {
 
         if (size == 0) {
             noLoginsSaved();
-
         } else {
-            struct AES_ctx ctx;
-            fread(&ctx, sizeof(struct AES_ctx), 1, userDataDB);
+            Login initialLogins[size];
+            readLogins(userDataDB, initialLogins, size);
 
-            Login logins[size];
-            fread(logins, sizeof(Login), size, userDataDB);
-
-            for (int i = 0; i < size; ++i) {
-                decryptLogin(&ctx, logins + i);
-            }
-
-            fclose(userDataDB);
-
-            printw("- Use arrow keys to select a login.\n");
-            printw("- Press enter to modify login.\n");
-            printw("- Press space to make login data visible.\n");
-            printw("- Press 'v' to make all logins visible.\n");
-            printw("- Press ESC to go back.\n\n");
-            printColorText(GREEN_TEXT_COLOR, "In total %d entries:\n", size);
-
-            enableKeypad();
-
-            int firstLine = stdscr->_cury;
-            int selected = 0;
             bool hasSelected = true;
+            int selected = 0;
+            char filter[MAX_FILTER_SIZE];
+
+            FilteredLogins filteredLogins =
+                filterLogins(initialLogins, size, NULL);
+
             bool areAllVisible = false;
             bool visible[size];
             for (int i = 0; i < size; ++i) {
                 visible[i] = false;
             }
 
-            printLogins(logins, size, 0, firstLine, visible);
+            int findLoginLine;
+            printScreenHeader(&findLoginLine, size);
+            int firstLine = stdscr->_cury;
+            printLogins(initialLogins, size, selected, firstLine, visible);
+
+            int lastLine = stdscr->_cury;
+
+            enableKeypad();
 
             while (1) {
                 int ch = getch();
@@ -128,23 +167,51 @@ void listLogins() {
 
                 if ('v' == ch) {
                     areAllVisible = areAllVisible ? false : true;
-                    for (int i = 0; i < size; ++i) {
+                    for (int i = 0; i < filteredLogins.size; ++i) {
                         visible[i] = areAllVisible;
                     }
                 }
 
-                selected = handleSelectedChange(ch, selected, size);
+                if ('f' == ch) {
+                    move(findLoginLine, 0);
+                    mvprintw(findLoginLine - 1, 0,
+                             "Input filter that will match either username or "
+                             "url and press enter:\n");
+
+                    echo();
+                    inputString(filter, MAX_FILTER_SIZE, false);
+                    noecho();
+
+                    refreshFilteredLogins(&filteredLogins, initialLogins, size,
+                                          filter, &findLoginLine, &selected);
+                }
+
+                if ('d' == ch) {
+                    refreshFilteredLogins(&filteredLogins, initialLogins, size,
+                                          NULL, &findLoginLine, &selected);
+                }
+
+                selected =
+                    handleSelectedChange(ch, selected, filteredLogins.size);
 
                 if ('\n' == ch) {
                     break;
-                };
+                }
 
-                printLogins(logins, size, selected, firstLine, visible);
+                printLogins(filteredLogins.logins, filteredLogins.size,
+                            selected, firstLine, visible);
             }
 
             if (hasSelected) {
-                handleLoginSelect(logins[selected], selected);
+                for (int i = 0; i < size; ++i) {
+                    if (strcmp(initialLogins[i].url,
+                               filteredLogins.logins[selected].url) == 0) {
+                        handleLoginSelect(initialLogins[i], i);
+                    }
+                }
             }
+
+            free(filteredLogins.logins);
 
             disableKeypad();
         }
