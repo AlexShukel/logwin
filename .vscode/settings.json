@@ -54,6 +54,7 @@
 		"stddef.h": "c",
 		"memory": "c",
 		"features.h": "c",
-		"reent.h": "c"
+		"reent.h": "c",
+		"ctime": "c"
 	}
 }

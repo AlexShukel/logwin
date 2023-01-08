@@ -3,6 +3,7 @@
 #include "curses.h"
 #include "main.h"
 #include "menu.h"
+#include "timeLogger.h"
 #include "utils.h"
 #include <errno.h>
 #include <inttypes.h>
@@ -35,6 +36,11 @@ void initConsole() {
 }
 
 int main(int argc, char **argv) {
+    // Initialization
+    initConsole();
+    srand(time(NULL));
+    initTimer();
+
     // Errors handling
     int exitCode = setjmp(exceptionJmpBuffer);
 
@@ -75,10 +81,6 @@ int main(int argc, char **argv) {
 
         return 0;
     }
-
-    // Initialization
-    initConsole();
-    srand(time(NULL));
 
     // Auth
     if (argc >= 2) {

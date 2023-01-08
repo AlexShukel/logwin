@@ -5,7 +5,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/cmake-build-debug/cli/logwin.exe",
-            "args": ["C:\\Git\\logwin\\cmake-build-debug\\cli\\alex.logwin"],
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/cmake-build-debug/cli",
             "environment": [],
