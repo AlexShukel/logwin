@@ -47,6 +47,6 @@ void inputString(char *str, size_t size, bool noEcho) {
     echo();
 
     if (noEcho) {
-        clearLine(currentY, currentX);
+        clearLine(currentY);
     }
 }

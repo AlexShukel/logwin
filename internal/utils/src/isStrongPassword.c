@@ -52,18 +52,6 @@ bool containsSpecialChar(const char *password) {
     return containsSpecifiedChar(password, isSpecialChar);
 }
 
-/*
-This function checks if password is strong enough by the following criteria:
-    1. Its length is at least 12.
-    2. It contains at least one digit.
-    3. It contains at least one lowercase English character.
-    4. It contains at least one uppercase English character.
-    5. It contains at least one special character. The special characters are:
-!@#$%^&*()-+
-
-Return value is an 8-bit flag, where ones determine unmet criterion from right
-to left. For example: 0000 1010 means that criteria 2 and 4 was not met
-*/
 uint8_t isStrongPassword(const char *password) {
     size_t size = strlen(password);
     uint8_t bitFlag = 0;

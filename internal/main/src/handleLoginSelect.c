@@ -10,7 +10,7 @@
 enum ActionWithLogin { DELETE, MODIFY, COPY, GO_BACK };
 
 void deleteLogin(int index) {
-    char filename[USERNAME_LENGTH + USER_DATA_FILENAME_EXTENSION_LEN];
+    char filename[USERNAME_LEN + USER_DATA_FILENAME_EXTENSION_LEN];
     getUserDataFilename(filename);
 
     FILE *userDataDB = fopen(filename, "r+b");
@@ -44,13 +44,13 @@ void modifyLogin(Login login, int index) {
     erase();
 
     printw("Modify url:\n");
-    modifyString(login.url, URL_LENGTH);
+    modifyString(login.url, URL_LEN);
 
     printw("Modify username:\n");
-    modifyString(login.username, USERNAME_LENGTH);
+    modifyString(login.username, USERNAME_LEN);
 
     printw("Modify password:\n");
-    modifyString(login.password, PASSWORD_LENGTH);
+    modifyString(login.password, PASSWORD_LEN);
 
     saveLoginCredentials(&login, index);
 }

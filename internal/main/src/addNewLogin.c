@@ -10,13 +10,13 @@ void addNewLogin() {
     Login loginCredentials;
 
     printw("Input website url:\n");
-    inputString(loginCredentials.url, URL_LENGTH, false);
+    inputString(loginCredentials.url, URL_LEN, false);
 
     printw("Input username:\n");
-    inputString(loginCredentials.username, USERNAME_LENGTH, false);
+    inputString(loginCredentials.username, USERNAME_LEN, false);
 
     printw("Input password:\n");
-    inputString(loginCredentials.password, PASSWORD_LENGTH, true);
+    inputString(loginCredentials.password, PASSWORD_LEN, true);
 
     saveLoginCredentials(&loginCredentials, -1);
     logwinMain();

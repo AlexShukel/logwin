@@ -1,3 +1,10 @@
+/**
+ * @author Aleksandras Sukelovic <alex.shukel@gmail.com>
+ * @version 1.0.0
+ *
+ * Main logwin module.
+ */
+
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -7,23 +14,33 @@
 #include <stdint.h>
 
 typedef struct {
-    char url[URL_LENGTH];
-    char username[USERNAME_LENGTH];
-    char password[PASSWORD_LENGTH];
+    char url[URL_LEN];
+    char username[USERNAME_LEN];
+    char password[PASSWORD_LEN];
 } Login;
 
+// Function to print main logwin interface.
 void logwinMain();
 
+// Function to save login data in a file of authenticated user.
 void saveLoginCredentials(Login *credentials, int index);
+
+// Function to add new login from keyboard.
 void addNewLogin();
 
+// Function to print all logins with possibility to filter, modify, view or
+// delete each record.
 void listLogins();
+
+// Function to print single login data.
 void printLogin(Login login, int firstLine, bool visible);
+
+// Function to print menu of possible actions with login: modify, delete or copy
+// password to clipboard.
 void handleLoginSelect(Login login, int index);
 
-// utils
+// Function to get filename of user data file. Outputs stirng to filename
+// parameter in format "<username>.logwin"
 void getUserDataFilename(char *filename);
-
-void encryptPassword(struct AES_ctx *aesContext, uint8_t *buffer);
 
 #endif

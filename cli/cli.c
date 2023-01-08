@@ -1,6 +1,14 @@
+/**
+ * @author Aleksandras Sukelovic <alex.shukel@gmail.com>
+ * @version 1.0.0
+ *
+ * Logwin cli entry point
+ */
+
 #include "app.h"
 #include "auth.h"
 #include "curses.h"
+#include "errorHandler.h"
 #include "main.h"
 #include "menu.h"
 #include "timeLogger.h"
@@ -15,9 +23,9 @@
 #include <time.h>
 
 // Global variables
-uint32_t t_cost = 2;
-uint32_t m_cost = (1 << 16);
-uint32_t parallelism = 1;
+uint32_t argon2_t_cost = 2;
+uint32_t argon2_m_cost = (1 << 16);
+uint32_t argon2_parallelism = 1;
 
 LoginData loginData;
 jmp_buf exceptionJmpBuffer;
@@ -47,37 +55,7 @@ int main(int argc, char **argv) {
     if (exitCode != IGNORE) {
         endwin();
 
-        switch (exitCode) {
-        case MANUAL_EXIT: {
-            printf("App closed. Log out successfully!\n");
-            break;
-        }
-
-        case TERMINAL_DOES_NOT_SUPPORT_COLOR: {
-            fprintf(stderr, "Your terminal does not support color\n");
-            break;
-        }
-
-        case SYSTEM_ERROR: {
-            perror("");
-            break;
-        }
-
-        case NO_USERS_FOUND: {
-            fprintf(
-                stderr,
-                "No users found in the database. Please, create an account.");
-            break;
-        }
-
-        case USER_NOT_FOUND: {
-            fprintf(stderr, "User specified in file name was not found.");
-            break;
-        }
-
-        default:
-            break;
-        }
+        printExitCodeMessage(exitCode);
 
         return 0;
     }

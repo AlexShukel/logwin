@@ -60,6 +60,7 @@
 		"concepts": "c",
 		"typeinfo": "c",
 		"__locale": "c",
-		"version": "c"
+		"version": "c",
+		"numeric": "c"
 	}
 }

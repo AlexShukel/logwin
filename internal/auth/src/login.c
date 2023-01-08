@@ -11,7 +11,7 @@
 #include <string.h>
 
 void login() {
-    char masterPassword[PASSWORD_LENGTH];
+    char masterPassword[PASSWORD_LEN];
     bool isValidLogin = false;
     int userIndex = -1;
 
@@ -29,19 +29,20 @@ void login() {
     int currentLine = stdscr->_cury + 1;
     while (!isValidLogin) {
         mvprintw(currentLine, 0, "Enter your username:\n");
-        clearLine(currentLine + 1, 0);
-        inputString(loginData.name, USERNAME_LENGTH, false);
+        clearLine(currentLine + 1);
+        inputString(loginData.name, USERNAME_LEN, false);
 
         mvprintw(currentLine + 2, 0, "Enter your password:\n");
-        inputString(masterPassword, PASSWORD_LENGTH, true);
+        inputString(masterPassword, PASSWORD_LEN, true);
 
-        nullifyString(masterPassword, PASSWORD_LENGTH);
+        nullifyString(masterPassword, PASSWORD_LEN);
 
         for (int i = 0; i < size; ++i) {
             if (strcmp(users[i].name, loginData.name) == 0) {
                 uint8_t hash[HASH_LEN];
-                argon2i_hash_raw(t_cost, m_cost, parallelism, masterPassword,
-                                 PASSWORD_LENGTH, users[i].salt, SALT_LEN, hash,
+                argon2i_hash_raw(argon2_t_cost, argon2_m_cost,
+                                 argon2_parallelism, masterPassword,
+                                 PASSWORD_LEN, users[i].salt, SALT_LEN, hash,
                                  HASH_LEN);
 
                 if (memcmp(users[i].hash, hash, HASH_LEN) == 0) {
@@ -57,7 +58,7 @@ void login() {
             "Username or password is invalid. Please, try again.\n");
     }
 
-    memcpy(loginData.key, masterPassword, PASSWORD_LENGTH);
+    memcpy(loginData.key, masterPassword, PASSWORD_LEN);
     memcpy(loginData.iv, users[userIndex].iv, AES_BLOCKLEN);
 
     erase();

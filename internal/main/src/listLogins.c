@@ -106,7 +106,7 @@ void readLogins(FILE *userDataDB, Login *logins, int size) {
 
 void listLogins() {
     erase();
-    char filename[USERNAME_LENGTH + USER_DATA_FILENAME_EXTENSION_LEN];
+    char filename[USERNAME_LEN + USER_DATA_FILENAME_EXTENSION_LEN];
     getUserDataFilename(filename);
 
     FILE *userDataDB = fopen(filename, "rb");

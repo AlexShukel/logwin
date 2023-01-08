@@ -47,7 +47,7 @@ bool userExists(const char *username, User *foundUser) {
 }
 
 void loginWithFilePath(const char *filePath) {
-    char username[USERNAME_LENGTH];
+    char username[USERNAME_LEN];
     getUsernameFromFilePath(filePath, username);
 
     User user;
@@ -58,18 +58,19 @@ void loginWithFilePath(const char *filePath) {
 
     printw("Your username is: %s\n", username);
 
-    char password[PASSWORD_LENGTH];
+    char password[PASSWORD_LEN];
     int currentLine = stdscr->_cury + 1;
 
     while (true) {
         mvprintw(currentLine, 0, "Please, enter your master password:\n");
-        inputString(password, PASSWORD_LENGTH, true);
+        inputString(password, PASSWORD_LEN, true);
 
-        nullifyString(password, PASSWORD_LENGTH);
+        nullifyString(password, PASSWORD_LEN);
 
         uint8_t hash[HASH_LEN];
-        argon2i_hash_raw(t_cost, m_cost, parallelism, password, PASSWORD_LENGTH,
-                         user.salt, SALT_LEN, hash, HASH_LEN);
+        argon2i_hash_raw(argon2_t_cost, argon2_m_cost, argon2_parallelism,
+                         password, PASSWORD_LEN, user.salt, SALT_LEN, hash,
+                         HASH_LEN);
 
         if (memcmp(hash, user.hash, HASH_LEN) == 0) {
             break;
@@ -79,7 +80,7 @@ void loginWithFilePath(const char *filePath) {
                             "Password is not correct. Please, try again.\n");
     }
 
-    memcpy(loginData.key, password, PASSWORD_LENGTH);
+    memcpy(loginData.key, password, PASSWORD_LEN);
     memcpy(loginData.iv, user.iv, AES_BLOCKLEN);
-    memcpy(loginData.name, username, USERNAME_LENGTH);
+    memcpy(loginData.name, username, USERNAME_LEN);
 }

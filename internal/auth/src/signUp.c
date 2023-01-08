@@ -34,7 +34,7 @@ void printPasswordStrengthCriteria(int firstLine, uint8_t bitFlag) {
 }
 
 void signUp() {
-    char newUsername[USERNAME_LENGTH];
+    char newUsername[USERNAME_LEN];
     bool isValidUsername = false;
     int currentLine = stdscr->_cury + 1;
 
@@ -48,8 +48,8 @@ void signUp() {
     // Input username
     while (!isValidUsername) {
         mvprintw(currentLine, 0, "New username:\n");
-        clearLine(currentLine + 1, 0);
-        inputString(newUsername, USERNAME_LENGTH, false);
+        clearLine(currentLine + 1);
+        inputString(newUsername, USERNAME_LEN, false);
 
         bool containsSlashes = includesSlashes(newUsername);
 
@@ -69,14 +69,14 @@ void signUp() {
                                 "Username can not contain slashes!");
         } else {
             isValidUsername = true;
-            clearLine(currentLine - 1, 0);
+            clearLine(currentLine - 1);
             stdscr->_cury += 2;
         }
     }
 
     bool arePasswordsSame = false;
-    char newPassword[PASSWORD_LENGTH];
-    char repeatedNewPassword[PASSWORD_LENGTH];
+    char newPassword[PASSWORD_LEN];
+    char repeatedNewPassword[PASSWORD_LEN];
 
     currentLine = stdscr->_cury + 1;
 
@@ -85,7 +85,7 @@ void signUp() {
     // Input master password
     do {
         mvprintw(currentLine, 0, "New master password:\n");
-        inputString(newPassword, PASSWORD_LENGTH, true);
+        inputString(newPassword, PASSWORD_LEN, true);
 
         bitFlag = isStrongPassword(newPassword);
 
@@ -99,7 +99,7 @@ void signUp() {
     // Repeat master password
     while (!arePasswordsSame) {
         mvprintw(currentLine + 2, 0, "Repeat you master password:\n");
-        inputString(repeatedNewPassword, PASSWORD_LENGTH, true);
+        inputString(repeatedNewPassword, PASSWORD_LEN, true);
 
         if (strcmp(newPassword, repeatedNewPassword) == 0) {
             arePasswordsSame = true;
@@ -115,11 +115,12 @@ void signUp() {
     generateIv(user.iv);
 
     uint8_t hash[HASH_LEN];
-    nullifyString(newPassword, PASSWORD_LENGTH);
-    argon2i_hash_raw(t_cost, m_cost, parallelism, newPassword, PASSWORD_LENGTH,
-                     user.salt, SALT_LEN, hash, HASH_LEN);
+    nullifyString(newPassword, PASSWORD_LEN);
+    argon2i_hash_raw(argon2_t_cost, argon2_m_cost, argon2_parallelism,
+                     newPassword, PASSWORD_LEN, user.salt, SALT_LEN, hash,
+                     HASH_LEN);
 
-    memcpy(user.name, newUsername, USERNAME_LENGTH);
+    memcpy(user.name, newUsername, USERNAME_LEN);
     memcpy(user.hash, hash, HASH_LEN);
 
     if (saveNewUser(&user)) {
